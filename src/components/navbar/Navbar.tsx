@@ -1,8 +1,14 @@
+import './navbar.scss'
 import React from "react"
 export const Navbar = () => {
     return (
      <div className="navbar">
-       Navbar
+       <div className="logo">
+        <span>Clining</span>
+       </div>
+        <div className='icons'>
+          <a className='login'>Login</a>
+        </div>
      </div>
     )
  }

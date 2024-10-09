@@ -1,10 +1,11 @@
+@import './../../styles/variables.scss';
 .navbar {
    width: 100%; 
-   padding: 20px;
+   padding: 15px;
    display: flex;
    align-items: center; 
    justify-content: space-between;
-
+   box-shadow: 20px 20px 20px $medium-dark-gray;
 
    .logo{
     align-items: center;
@@ -14,60 +15,21 @@
       
     span {
         color: white;
+        font-size: 20px;
      }
    }
 
-   .icons {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-
-      .notifications {
-        position: relative;
-        span {
-           background-color: red;
-           color: white;
-           width: 16px;
-           height: 16px;
-           border-radius: 50%; 
-           position: absolute;
-           top: -10px;
-           right: -10ps;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-           font-size: 12;
-        }
-      }
-
-      .user {
-        gap: 10px;
-        display: flex;
-        align-items: center;
-        img {
-           width: 26px;
-           height: 26px;
-           border-radius: 50%;
-           object-fit: cover;
-         }
-
-         span {
-            color: white;
-         }
-       }
-   }
-     
-
    .login {
       display: flex;
-      background-color: #161a1d;
+      background-color: $soft-bg;
       padding: 8px;
       width: 80px;
+      margin-right: 80px;
       justify-content: center;
       border-radius: 10px;
-      color: white;
+      color: $soft-color;
       &:hover {
-         background-color: #34404e;
+         background-color: #2f3337;
       }
    }
 }
