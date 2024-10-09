@@ -6,7 +6,7 @@ import { Login } from "./login/Login.tsx"
 import { Navbar } from "./components/navbar/Navbar.tsx"
 import { Footer } from "./components/footer/Footer.tsx"
 import { Home } from "./home/Home.tsx"
-
+import './styles/global.scss'
 import {
   createBrowserRouter,
   RouterProvider,

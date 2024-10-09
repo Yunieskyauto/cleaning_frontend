@@ -1,0 +1,8 @@
+@import './variables.scss';
+
+.main {
+  background-color: $dark-main-color;
+  font-family: 'Inter' sans-serif;
+  color: $light-sea-blue;
+  height: 100vh;
+}
