@@ -1,7 +1,10 @@
+import { Admin } from "./admin/Admin.tsx";
+import { Employees } from "./employees/Employees.tsx";
+
 function App() {
   return (
     <div className="App">
-      Cleaning
+      <Admin />
     </div>
   );
 }
