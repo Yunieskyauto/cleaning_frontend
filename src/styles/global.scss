@@ -4,7 +4,9 @@
   background-color: $dark-main-color;
   font-family: 'Inter' sans-serif;
   color: $light-sea-blue;
-  height: 100vh;
+  height: 100%;
+  width: 100%;
+  position: fixed;
 }
 
 .container {
@@ -12,11 +14,12 @@
 }
 
 .menuContainer {
-    width: 250px;
+    width: 240px;
     padding: 5px 20px;
     background: $medium-dark-gray;
-    border: solid gray;
+    border-right: solid gray;
     border-width: 0.1px;
+    height: 100vh;
 }
 
 .contentContainer {

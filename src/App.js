@@ -41,7 +41,7 @@ function App() {
           element: <Home />,
         },
         {
-          path: "/users",
+          path: "/customers",
           element: <Users />,
         },
         {
