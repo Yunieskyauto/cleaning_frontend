@@ -12,8 +12,9 @@ export const Input = (props: any) => {
     }
   }
   return (
-    <div className='input-box'>
-      <input 
+    <div className='container'>
+      <div className='input-box'>
+       <input 
          className={props.className}
          type={props.type} 
          placeholder={props.placeholder}
@@ -21,7 +22,14 @@ export const Input = (props: any) => {
          onChange={props.onChange}
          required
          />
-       {icon()}  
+        {icon()} 
+      </div>
+       <div className="error-div">{props.errorMsg}</div>
   </div>
   )  
 }
+
+/*
+ {icon()} 
+
+*/

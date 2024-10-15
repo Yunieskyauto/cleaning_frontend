@@ -9,6 +9,9 @@ export const Login = () => {
     
     const [input, setInput] = useState('default-input')
     const [passwordInput, setPasswordInput] = useState('default-input')
+    
+    const [emailErrorMsg, setEmailErrorMsg] = useState('')
+    const [passwordErrorMsg, setPasswordErrorMsg] = useState('')
 
    const handleEmailChange = (e: string) => { 
     setEmail(e)
@@ -42,6 +45,7 @@ export const Login = () => {
              type={"email"}
              name={"email"}
              onChange={(e: any) => {handleEmailChange(e.target.value)}}
+             errorMsg={emailErrorMsg}
            />
 
             <Input 
@@ -50,7 +54,9 @@ export const Login = () => {
              type={"password"}
              name={"password"}
              onChange={(e: any) => {handlePasswordChange(e.target.value)}}
-            />
+             errorMsg={passwordErrorMsg}
+           />
+
 
            <div className='remember-forgot'>
               <div className='check-box'>
@@ -68,3 +74,14 @@ export const Login = () => {
         </div>
     )
 }
+
+/*
+
+            <Input 
+             className={passwordInput}
+             placeholder={"Enter your assword"}
+             type={"password"}
+             name={"password"}
+             onChange={(e: any) => {handlePasswordChange(e.target.value)}}
+            />
+*/

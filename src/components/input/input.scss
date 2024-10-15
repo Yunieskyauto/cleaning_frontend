@@ -1,59 +1,74 @@
-.input-box {
+@import './../../styles/variables.scss';
+.container {
     width: 100%;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 10px;
-    margin: 40px 0px;
- 
-    .default-input {
-       width: 100%;
-       height: 100%;
-       background: transparent;
-       border: none;
-       outline: none;
-       border: solid;
-       border-color: #95999d;
-       border-radius: 15px;
-       border-width: 1px;
-       padding: 20px;  
-       box-shadow: 1px 1px 10px 1px grey;     
+    align-items: flex-start;
+    height: 70px;
+    margin: 10px 0px;
+    flex-direction: column;
+    gap: 7px;
+
+    .input-box {
+        width: 100%;
+        height: 80%;
+        display: flex;
+        align-items: center;
+        input {
+            width: 100%;
+            height: 100%;
+        }
+        .icon {
+            position: absolute;
+            right: 85px;
+        }
+
+        .default-input {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            border: solid;
+            border-color: $grau-default;
+            border-radius: 15px;
+            border-width: 1px;
+            box-shadow: 1px 1px 10px 1px $grau-default;     
+            padding-left: 20px;
+        }
+      
+        .invalid-input {
+         width: 100%;
+         height: 100%;
+         background: transparent;
+         border: none;
+         outline: none;
+         border: solid;
+         border-color:  $red-error;
+         border-radius: 15px;
+         border-width: 0.5px;   
+         box-shadow: 1px 1px 10px 1px  $red-error;
+         padding-left: 20px;
+        }
+      
+        .valid-input {
+         width: 100%;
+         height: 100%;
+         background: transparent;
+         border: none;
+         outline: none;
+         border: solid;
+         border-color:  $gree-valid;
+         border-radius: 15px;
+         border-width: 0.5px;
+         box-shadow: 1px 1px 10px 1px  $gree-valid;
+         padding-left: 20px;
+        }
     }
- 
-   .invalid-input {
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    border: solid;
-    border-color:  #dc3545;
-    border-radius: 15px;
-    border-width: 0.5px;
-    padding: 20px;   
-    box-shadow: 1px 1px 10px 1px  #dc3545; 
-   }
- 
-   .valid-input {
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    border: solid;
-    border-color:  #198754;
-    border-radius: 15px;
-    border-width: 0.5px;
-    padding: 20px;   
-    box-shadow: 1px 1px 10px 1px  #198754;
-   }
-   .icon {
-       position: absolute;
-       right: 85px;
-   }
-   ::placeholder {
-    margin-left: 20px;
-   }
-   
+     .error-div {
+        height: 30%;
+        font-size: 13px;
+        margin-left: 15px;
+        color: $red-error;
+     }
   } 
   
