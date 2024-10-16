@@ -1,87 +1,91 @@
 import React from "react"
 import './login.scss'
 import { Input } from "../components/input/Input.tsx";
-import { useState } from "react";
+import { useState, useRef, } from "react";
 
 export const Login = () => {
-    const [email, setEmail] = useState('');
-    const [isValid, setIsValid] = useState(true);
-    
-    const [input, setInput] = useState('default-input')
-    const [passwordInput, setPasswordInput] = useState('default-input')
-    
-    const [emailErrorMsg, setEmailErrorMsg] = useState('')
-    const [passwordErrorMsg, setPasswordErrorMsg] = useState('')
+  const [email, setEmail] = useState('');
+  const [isValid, setIsValid] = useState(true);
 
-   const handleEmailChange = (e: string) => { 
+  const [emailInputState, setEmailInputState] = useState('default-input')
+  
+  const [password, setPassword] = useState('')
+  const [passwordInputState, setPasswordInputState] = useState('default-input')
+
+  const [emailErrorMsg, setEmailErrorMsg] = useState('')
+  const [passwordErrorMsg, setPasswordErrorMsg] = useState('')
+
+
+  const passwordRef = useRef();
+  const emailRef = useRef();
+
+  const handleEmailChange = (e: string) => {
     setEmail(e)
     if (e === '') {
-        setInput('default-input')
-     } else {
-        setIsValid(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
-        if (isValid) {
-            setInput('valid-input')
-         } else {
-            setInput('invalid-input')
-         }
-     }     
+      setEmailInputState('default-input')
+    } else {
+      setIsValid(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
+      if (isValid) {
+        setEmailInputState('valid-input')
+      } else {
+        setEmailInputState('invalid-input')
+      }
+    }
   };
 
   const handlePasswordChange = (e: string) => {
+    setPassword(e)
     if (e !== '') {
-        setPasswordInput('valid-input')
+      setPasswordInputState('valid-input')
     } else {
-        setPasswordInput('default-input')
+      setPasswordInputState('default-input')
     }
   }
 
-    return(
-        <div className='login'>
-            <div className="wrapper">
-            <h1>Login</h1>
-           <Input 
-             className={input}
-             placeholder={"Enter your email"}
-             type={"email"}
-             name={"email"}
-             onChange={(e: any) => {handleEmailChange(e.target.value)}}
-             errorMsg={emailErrorMsg}
-           />
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-            <Input 
-             className={passwordInput}
-             placeholder={"Enter your assword"}
-             type={"password"}
-             name={"password"}
-             onChange={(e: any) => {handlePasswordChange(e.target.value)}}
-             errorMsg={passwordErrorMsg}
-           />
+    setEmail('')
+    setPassword('')
+  }
 
+  return (
+    <div className='login'>
+      <form className="wrapper" onSubmit={handleSubmit}>
+        <h1>Login</h1>
+        <Input
+          className={emailInputState}
+          placeholder={"Enter your email"}
+          value={email}
+          type={"email"}
+          name={"email"}
+          onChange={(e: any) => { handleEmailChange(e.target.value) }}
+          errorMsg={emailErrorMsg}
+        />
 
-           <div className='remember-forgot'>
-              <div className='check-box'>
-                <input type='checkbox'/>
-                <label> Remember me</label>
-              </div>
-              <a href='#'>Forgot password?</a>
-           </div>
-           <button type='submit'>Login</button>
-
-           <div className='register-link'>
-             <p>Don't have an account <a href='#'>Register</a></p>
-           </div>
-            </div>
+        <Input
+          className={passwordInputState}
+          placeholder={"Enter your assword"}
+          value={password}
+          type={"password"}
+          name={"password"}
+          onChange={(e: any) => { handlePasswordChange(e.target.value) }}
+          errorMsg={passwordErrorMsg}
+        />
+        <div className='remember-forgot'>
+          <div className='check-box'>
+            <input type='checkbox' />
+            <label> Remember me</label>
+          </div>
+          <a href='#'>Forgot password?</a>
         </div>
-    )
+        <button type='submit'>Login</button>
+
+        <div className='register-link'>
+          <p>Don't have an account <a href='#'>Register</a></p>
+        </div>
+      </form>
+    </div>
+  )
 }
 
-/*
-
-            <Input 
-             className={passwordInput}
-             placeholder={"Enter your assword"}
-             type={"password"}
-             name={"password"}
-             onChange={(e: any) => {handlePasswordChange(e.target.value)}}
-            />
-*/

@@ -1,6 +1,8 @@
 import './input.scss'
 import { FaUser, FaLock } from "react-icons/fa";
 import React from 'react';
+import { forwardRef } from "react";
+
 export const Input = (props: any) => {
 
  const icon = () => {
@@ -19,6 +21,7 @@ export const Input = (props: any) => {
          type={props.type} 
          placeholder={props.placeholder}
          name={props.name}
+         value={props.value}
          onChange={props.onChange}
          required
          />
