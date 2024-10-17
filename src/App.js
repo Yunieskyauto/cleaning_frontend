@@ -26,7 +26,6 @@ function App() {
             <Outlet /> 
           </div>
         </div>
-        <Footer />
       </div>
     )
   }
