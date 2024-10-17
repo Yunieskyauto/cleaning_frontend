@@ -5,23 +5,36 @@ import { FaUsers } from "react-icons/fa";
 import './menu.scss'
 
 export const Menu = () => {
-    return(
-        <div className="menu">
-            <div className="item">
-                <span className="menu-session-title">MAIN</span>
-                <Link to='/' className="link">
-                  <IoIosHome className="icon"/>
-                  <span className="item-title">Home</span>
-                </Link>
-                <Link to='/employees' className="link">
-                  <FaUsers className="icon"/>
-                  <span className="item-title">Employees</span>
-                </Link>
-                <Link to='/customers' className="link">
-                  <FaUsers className="icon"/>
-                  <span className="item-title">Costumers</span>
-                </Link>
-            </div>
+  return (
+    <div className="menu">
+      <div className="item">
+        <span className="menu-session-title">MAIN</span>
+        <div className="item-box">
+          <Link to='/' className="link">
+            <IoIosHome className="icon" />
+            <span className="item-title">Home</span>
+          </Link>
         </div>
-    )
+        <div className="item-box">
+          <Link to='/employees' className="link">
+            <FaUsers className="icon" />
+            <span className="item-title">Employees</span>
+          </Link>
+        </div>
+        <div className="item-box">
+          <Link to='/customers' className="link">
+            <FaUsers className="icon" />
+            <span className="item-title">Costumers</span>
+          </Link>
+        </div>
+        <div className="line" />
+        <div className="login-box">
+          <text>Login to see more options.</text>
+          <Link to='/customers' className="login-button">
+            <span className="item-title">Login</span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
 }
