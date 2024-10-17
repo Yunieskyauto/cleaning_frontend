@@ -44,9 +44,54 @@ export const Login = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log(email + " " + password)
 
-    setEmail('')
-    setPassword('')
+  
+    fetch(`/authenticate`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password}),
+    })
+      .then((response) => response.json())
+      .then((data => {
+        if (data.Errors !== undefined) {
+
+          setEmail(data.Data.email);
+
+          if (data.Errors.email !== undefined) {
+            setEmailErrorMsg(data.Errors.email[0]);
+          }
+
+          if (data.Errors.password !== undefined) {
+            setPasswordErrorMsg(data.Errors.password[0]);
+          }
+        }
+
+        let access  = ""
+        if (data.id !== undefined && data.token.access_token !== undefined) {
+        
+          const headers = new Headers()
+          headers.append('Content-Type', 'application/json')
+          headers.append('Authorization', 'Bearer ' + data.token.access_token)
+    
+          const requestOptions = {
+            method: "GET",
+            headers: headers,
+          }
+          
+          fetch("/admin/employees", requestOptions)
+          .then((response) => response.json())
+          .then(data => {
+            console.log(data)
+          })
+        }
+        access = data.access_token
+      }))
+      .catch(err => {
+        console.log(err);
+      })
   }
 
   return (
