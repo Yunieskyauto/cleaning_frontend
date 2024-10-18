@@ -30,7 +30,7 @@ export const Menu = () => {
         <div className="line" />
         <div className="login-box">
           <text>Login to see more options.</text>
-          <Link to='/customers' className="login-button">
+          <Link to='/login' className="login-button">
             <span className="item-title">Login</span>
           </Link>
         </div>

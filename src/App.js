@@ -51,12 +51,12 @@ function App() {
           path: "/admin",
           element: <Admin />,
         },
+        {
+          path: "/login",
+          element: <Login />
+        }
       ]
     },
-    {
-      path: "/login",
-      element: <Login />
-    }
   ]);
 
   return (

@@ -14,7 +14,7 @@ export const Input = (props: any) => {
     }
   }
   return (
-    <div className='container'>
+    <div className='input-container'>
       <div className='input-box'>
        <input 
          className={props.className}
@@ -25,14 +25,11 @@ export const Input = (props: any) => {
          onChange={props.onChange}
          required
          />
+        <div className='icon-box'>
         {icon()} 
+        </div>
       </div>
        <div className="error-div">{props.errorMsg}</div>
   </div>
   )  
 }
-
-/*
- {icon()} 
-
-*/

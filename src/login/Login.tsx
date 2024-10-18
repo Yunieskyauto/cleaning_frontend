@@ -96,9 +96,9 @@ export const Login = () => {
 
   return (
     <div className='login'>
-      <form className="wrapper" onSubmit={handleSubmit}>
-        <h1>Login</h1>
-        <Input
+      <form>
+      <h1>Login</h1>
+      <Input
           className={emailInputState}
           placeholder={"Enter your email"}
           value={email}
@@ -117,7 +117,7 @@ export const Login = () => {
           onChange={(e: any) => { handlePasswordChange(e.target.value) }}
           errorMsg={passwordErrorMsg}
         />
-        <div className='remember-forgot'>
+      <div className='remember-forgot'>
           <div className='check-box'>
             <input type='checkbox' />
             <label> Remember me</label>
@@ -133,4 +133,3 @@ export const Login = () => {
     </div>
   )
 }
-
