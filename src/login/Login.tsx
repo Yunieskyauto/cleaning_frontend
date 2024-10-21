@@ -1,9 +1,9 @@
-import React from "react"
+import React, { useEffect } from "react"
 import './login.scss'
 import { Input } from "../components/input/Input.tsx";
 import { useState, useRef, } from "react";
 
-export const Login = () => {
+export const Login = (props: any) => {
   const [email, setEmail] = useState('');
   const [isValid, setIsValid] = useState(true);
 
@@ -15,9 +15,7 @@ export const Login = () => {
   const [emailErrorMsg, setEmailErrorMsg] = useState('')
   const [passwordErrorMsg, setPasswordErrorMsg] = useState('')
 
-
-  const passwordRef = useRef();
-  const emailRef = useRef();
+  const [userName, setUserName] = useState('')
 
   const handleEmailChange = (e: string) => {
     setEmail(e)
@@ -57,17 +55,17 @@ export const Login = () => {
       .then((response) => response.json())
       .then((data => {
         if (data.Errors !== undefined) {
-
           setEmail(data.Data.email);
-
           if (data.Errors.email !== undefined) {
             setEmailErrorMsg(data.Errors.email[0]);
           }
-
           if (data.Errors.password !== undefined) {
             setPasswordErrorMsg(data.Errors.password[0]);
           }
         }
+        
+        // get the user name to set up the navbar
+        setUserName(data.first_name + " " + data.last_name)
 
         let access  = ""
         if (data.id !== undefined && data.token.access_token !== undefined) {
@@ -93,10 +91,16 @@ export const Login = () => {
         console.log(err);
       })
   }
+   useEffect(() => {
+    if (userName !== "") {
+      props.onUserName(userName)
+    }
+   }, [userName])
+
 
   return (
     <div className='login'>
-      <form>
+      <form onSubmit={handleSubmit}>
       <h1>Login</h1>
       <Input
           className={emailInputState}

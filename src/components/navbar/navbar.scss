@@ -1,12 +1,12 @@
 @import './../../styles/variables.scss';
 .navbar {
-   width: 100%; 
-   padding: 15px;
+   width: 100% ;
+   height: 50px;
    display: flex;
    align-items: center; 
    justify-content: space-between;
    box-shadow: 20px 20px 20px $medium-dark-gray;
-
+   padding: 0px 15px; 
    .logo{
     align-items: center;
     display: flex;
@@ -19,17 +19,24 @@
      }
    }
 
-   .login {
-      display: flex;
-      background-color: $soft-bg;
-      padding: 8px;
-      width: 80px;
-      margin-right: 80px;
-      justify-content: center;
-      border-radius: 10px;
-      color: $soft-color;
-      &:hover {
-         background-color: #2f3337;
-      }
+   .nav-profile-box {
+     display: flex;
+     width: 200px;
+     height: 100%;
+     margin-right: 20px;
+     align-items: center;
+     gap: 10px;
+     justify-content: center;
+
+     .profile-photo {
+      width: 40px;
+      height: 40px;
+      background-color: beige;
+      border-radius: 100%;
+     }
+
+     .profile-name {
+       color: white
+     } 
    }
 }

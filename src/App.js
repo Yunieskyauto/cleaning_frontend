@@ -12,12 +12,14 @@ import {
   RouterProvider,
   Outlet
 } from "react-router-dom";
-
+import { useState } from "react";
 function App() {
+  const [userName, setUserName] = useState('')
+  
   const Layout = () => {
     return (
       <div className="main">
-        <Navbar />
+        <Navbar userName={userName}/>
         <div className="container">
           <div className="menuContainer">
             <Menu />
@@ -53,7 +55,7 @@ function App() {
         },
         {
           path: "/login",
-          element: <Login />
+          element: <Login onUserName={setUserName}/>
         }
       ]
     },
