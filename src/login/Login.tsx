@@ -15,8 +15,6 @@ export const Login = (props: any) => {
   const [emailErrorMsg, setEmailErrorMsg] = useState('')
   const [passwordErrorMsg, setPasswordErrorMsg] = useState('')
 
-  const [userName, setUserName] = useState('')
-
   const handleEmailChange = (e: string) => {
     setEmail(e)
     if (e === '') {
@@ -42,9 +40,7 @@ export const Login = (props: any) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(email + " " + password)
 
-  
     fetch(`/authenticate`, {
       method: "POST",
       headers: {
@@ -64,8 +60,13 @@ export const Login = (props: any) => {
           }
         }
         
-        // get the user name to set up the navbar
-        setUserName(data.first_name + " " + data.last_name)
+        // get user to App.js
+       props.onUser({
+        firstName: data.first_name, 
+        lastName: data.last_name, 
+        accessToken: data.access_token, 
+        accessLevel: data.access_level
+      }) 
 
         let access  = ""
         if (data.id !== undefined && data.token.access_token !== undefined) {
@@ -91,12 +92,6 @@ export const Login = (props: any) => {
         console.log(err);
       })
   }
-   useEffect(() => {
-    if (userName !== "") {
-      props.onUserName(userName)
-    }
-   }, [userName])
-
 
   return (
     <div className='login'>

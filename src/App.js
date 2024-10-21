@@ -14,8 +14,12 @@ import {
 } from "react-router-dom";
 import { useState } from "react";
 function App() {
+  const [user, setUser] = useState({"firstName": "", "lastName": "", "accessToken": "", "accessLevel": ""})
   const [userName, setUserName] = useState('')
   
+  const handleUser = (user) => {
+   setUserName(user.firstName + " " + user.lastName)
+  }
   const Layout = () => {
     return (
       <div className="main">
@@ -55,7 +59,7 @@ function App() {
         },
         {
           path: "/login",
-          element: <Login onUserName={setUserName}/>
+          element: <Login onUser={handleUser}/>
         }
       ]
     },
