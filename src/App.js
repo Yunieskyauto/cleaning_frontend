@@ -20,11 +20,12 @@ function App() {
 
   const handleUser = (newUser) => {
     setEmployee(newUser)
-    setUserName(employee.firstName + " " + employee.lastName)
+    
   }
   const Layout = () => {
     useEffect(() => {
       if (employee.accessLevel === 1 && employee.accessToken !== "") {
+        setUserName(employee.firstName + " " + employee.lastName)
         navigate("/")
       }
     }, [employee])
