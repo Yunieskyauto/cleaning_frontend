@@ -10,9 +10,10 @@ import './styles/global.scss'
 import {
   createBrowserRouter,
   RouterProvider,
-  Outlet
+  Outlet, 
+  useNavigate
 } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 function App() {
   const [user, setUser] = useState({"firstName": "", "lastName": "", "accessToken": "", "accessLevel": ""})
   const [userName, setUserName] = useState('')
@@ -21,6 +22,12 @@ function App() {
    setUserName(user.firstName + " " + user.lastName)
   }
   const Layout = () => {
+    useEffect(() => {
+     if (user !== undefined) {
+      navigate("/")
+     }
+    }, [user])
+    const navigate = useNavigate();
     return (
       <div className="main">
         <Navbar userName={userName}/>
@@ -29,7 +36,9 @@ function App() {
             <Menu />
           </div>
           <div className="contentContainer">
-            <Outlet /> 
+            <Outlet context={{
+              userName
+            }}/> 
           </div>
         </div>
       </div>
