@@ -10,35 +10,36 @@ import './styles/global.scss'
 import {
   createBrowserRouter,
   RouterProvider,
-  Outlet, 
+  Outlet,
   useNavigate
 } from "react-router-dom";
 import { useEffect, useState } from "react";
 function App() {
-  const [user, setUser] = useState({"firstName": "", "lastName": "", "accessToken": "", "accessLevel": ""})
+  const [employee, setEmployee] = useState({ "firstName": "", "lastName": "", "accessToken": "", "accessLevel": "" })
   const [userName, setUserName] = useState('')
-  
-  const handleUser = (user) => {
-   setUserName(user.firstName + " " + user.lastName)
+
+  const handleUser = (newUser) => {
+    setEmployee(newUser)
+    setUserName(employee.firstName + " " + employee.lastName)
   }
   const Layout = () => {
     useEffect(() => {
-     if (user !== undefined) {
-      navigate("/")
-     }
-    }, [user])
+      if (employee.accessLevel === 1 && employee.accessToken !== "") {
+        navigate("/")
+      }
+    }, [employee])
     const navigate = useNavigate();
     return (
       <div className="main">
-        <Navbar userName={userName}/>
+        <Navbar userName={userName} />
         <div className="container">
           <div className="menuContainer">
             <Menu />
           </div>
           <div className="contentContainer">
             <Outlet context={{
-              userName
-            }}/> 
+              employee
+            }} />
           </div>
         </div>
       </div>
@@ -68,7 +69,7 @@ function App() {
         },
         {
           path: "/login",
-          element: <Login onUser={handleUser}/>
+          element: <Login onUser={handleUser} />
         }
       ]
     },

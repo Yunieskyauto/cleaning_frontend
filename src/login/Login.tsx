@@ -62,33 +62,15 @@ export const Login = (props: any) => {
             setPassword("")
           }
         }
-
-        let access = ""
-        if (data.id !== undefined && data.token.access_token !== undefined) {
-
+        if (data.access_token !== "") {
           // get user to App.js
           props.onUser({
             firstName: data.first_name,
             lastName: data.last_name,
-            accessToken: data.access_token,
+            accessToken: data.token.access_token,
             accessLevel: data.access_level
           })
-          const headers = new Headers()
-          headers.append('Content-Type', 'application/json')
-          headers.append('Authorization', 'Bearer ' + data.token.access_token)
-
-          const requestOptions = {
-            method: "GET",
-            headers: headers,
-          }
-
-          fetch("/admin/employees", requestOptions)
-            .then((response) => response.json())
-            .then(data => {
-              console.log(data)
-            })
         }
-        access = data.access_token
       }))
       .catch(err => {
         console.log(err);
