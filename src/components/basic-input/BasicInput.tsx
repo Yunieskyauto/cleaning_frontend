@@ -1,4 +1,4 @@
-import './input.scss'
+import './basic-input.scss'
 import { FaUser, FaLock } from "react-icons/fa";
 import React from 'react';
 import { forwardRef } from "react";
@@ -6,13 +6,11 @@ import { forwardRef } from "react";
 export const Input = (props: any) => {
 
  const icon = () => {
-    if (props.haveIcon) {
-      switch(props.name) {
-        case 'email':
-          return <div className='icon-box'><FaUser className='icon'/></div> 
-        case 'password':
-          return<div className='icon-box'><FaLock className='icon'/></div>  ;
-      }
+    switch(props.name) {
+      case 'email':
+        return <FaUser className='icon'/>
+      case 'password':
+        return <FaLock className='icon'/>;
     }
   }
   return (
@@ -27,7 +25,9 @@ export const Input = (props: any) => {
          onChange={props.onChange}
          required
          />
-         {icon()} 
+        <div className='icon-box'>
+        {icon()} 
+        </div>
       </div>
        <div className="error-div">{props.errorMsg}</div>
   </div>
