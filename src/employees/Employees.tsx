@@ -20,6 +20,7 @@ export const Employees = () => {
   const navigate = useNavigate()
 
   const [employees, setEmployees] = useState([{ "firstName": "", "lastName": "", "email": "" }])
+  const [newEmployeeError, setNewEmployeeError] = useState(true)
 
   const [colDefs, setColDefs] = useState([
     { field: "firstName" },
@@ -36,6 +37,7 @@ export const Employees = () => {
 
   const addEmployee = () => {
     setOpen(true);
+    setNewEmployeeError(true)
   }
 
   const [open, setOpen] = React.useState(false);
@@ -53,12 +55,30 @@ export const Employees = () => {
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries((formData as any).entries());
     const email = formJson.email;
-    console.log(formJson);
+    const  firstName = formJson.first_name;
+    const  lastName = formJson.last_name;
+
+    if (employee.accessToken !== "") {
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      headers.append('Authorization', 'Bearer ' + employee.accessToken)
+
+      const requestOptions = {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({firstName, lastName, email}),
+      }
+      fetch("/admin/register-cleaner", requestOptions)
+        .then((response) => response.json())
+        .then(data => {
+          setNewEmployeeError(data.error)
+        })
+    }
+
     setOpen(false);
   }
 
   useEffect(() => {
-    let x = []
     if (employee.accessToken !== "") {
       const headers = new Headers()
       headers.append('Content-Type', 'application/json')
@@ -84,8 +104,7 @@ export const Employees = () => {
     } else {
       navigate("/")
     }
-
-  }, [])
+  }, [newEmployeeError])
   return (
     <div className="Employees">
         // wrapping container with theme & size
