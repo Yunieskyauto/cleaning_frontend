@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useMemo } from "react"
 import { useNavigate, useOutletContext } from "react-router-dom"
-import { TableGrid } from "../components/table/TableGrid.tsx"
 import { AgGridReact } from 'ag-grid-react'; // React Data Grid Component
 import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the Data Grid
 import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the Data Grid
-
-
+import { Fab, Action } from 'react-tiny-fab';
+import 'react-tiny-fab/dist/styles.css';
+import { IoMdAdd } from "react-icons/io";
 
 export const Employees = () => {
   const { employee } = useOutletContext()
@@ -26,6 +26,9 @@ export const Employees = () => {
       };
   }, []);
 
+  const addEmployee = () => {
+    console.log("add")
+  }
   
   useEffect(() => {
     let x = []
@@ -38,7 +41,6 @@ export const Employees = () => {
         method: "GET",
         headers: headers,
       }
-      console.log("Hello")
       fetch("/admin/employees", requestOptions)
         .then((response) => response.json())
         .then(data => {
@@ -71,6 +73,10 @@ export const Employees = () => {
           defaultColDef={defaultColDef} 
       />
     </div>
+    <Fab
+    icon={<IoMdAdd />}
+    onClick={addEmployee}
+    />
     </div>
   )
 }
