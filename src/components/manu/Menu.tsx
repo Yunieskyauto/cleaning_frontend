@@ -1,10 +1,22 @@
-import React from "react"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { IoIosHome } from "react-icons/io";
 import { FaUsers } from "react-icons/fa";
 import './menu.scss'
+import { Dialog } from "@mui/material";
+import { RegsterUserDialog } from "../dialogs/RegisterUserDialog.tsx";
 
 export const Menu = () => {
+  const [openDialog, setOpenDialog] = useState(false)
+
+  const opneLoginDialog = () => {
+    console.log(openDialog)
+    if (!openDialog) {
+      setOpenDialog(true)
+    } else {
+      setOpenDialog(false)
+    }
+  }
   return (
     <div className="menu">
       <div className="item">
@@ -30,11 +42,12 @@ export const Menu = () => {
         <div className="line" />
         <div className="login-box">
           <span>Login to see more options.</span>
-          <Link to='/login' className="login-button">
+          <div className="login-button" onClick={() => opneLoginDialog()}>
             <span className="item-title">Login</span>
-          </Link>
+          </div>
         </div>
       </div>
+      <RegsterUserDialog open={openDialog}/>
     </div>
   )
 }
