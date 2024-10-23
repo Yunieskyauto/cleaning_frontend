@@ -1,8 +1,5 @@
 import React, { useEffect, useState, useMemo, Fragment } from "react"
 import { useNavigate, useOutletContext } from "react-router-dom"
-import { AgGridReact } from 'ag-grid-react'; // React Data Grid Component
-import "ag-grid-community/styles/ag-grid.css"; // Mandatory CSS required by the Data Grid
-import "ag-grid-community/styles/ag-theme-quartz.css"; // Optional Theme applied to the Data Grid
 import { Fab, Action } from 'react-tiny-fab';
 import 'react-tiny-fab/dist/styles.css';
 import { IoMdAdd } from "react-icons/io";
@@ -14,26 +11,36 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Input } from "../components/input/Input.tsx";
 import "./employees.scss"
 import { Box, Grid2, Paper } from "@mui/material";
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+
+
+const columns: GridColDef[] = [
+  { field: 'id', headerName: 'ID', width: 70 },
+  { field: 'firstName', headerName: 'First name', width: 130 },
+  { field: 'lastName', headerName: 'Last name', width: 130 },
+  {
+    field: 'email',
+    headerName: 'email',
+    type: 'string',
+    width: 90,
+  },
+];
+
+const paginationModel = { page: 0, pageSize: 5 };
+
+export interface Employee {
+  id: number;
+  firstName: string,
+  lastName: string,
+  email: string
+}
 
 export const Employees = () => {
   const { employee } = useOutletContext()
   const navigate = useNavigate()
 
-  const [employees, setEmployees] = useState([{ "firstName": "", "lastName": "", "email": "" }])
+  const [employees, setEmployees] = useState([{ id: 0, firstName: "", lastName: "", email: "" }])
   const [newEmployeeError, setNewEmployeeError] = useState(true)
-
-  const [colDefs, setColDefs] = useState([
-    { field: "firstName" },
-    { field: "lastName" },
-    { field: "email" },
-  ])
-
-  const defaultColDef = useMemo(() => {
-    return {
-      width: 500,
-      cellStyle: { fontWeight: 'bold' },
-    };
-  }, []);
 
   const addEmployee = () => {
     setOpen(true);
@@ -55,8 +62,8 @@ export const Employees = () => {
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries((formData as any).entries());
     const email = formJson.email;
-    const  firstName = formJson.first_name;
-    const  lastName = formJson.last_name;
+    const firstName = formJson.first_name;
+    const lastName = formJson.last_name;
 
     if (employee.accessToken !== "") {
       const headers = new Headers()
@@ -66,7 +73,7 @@ export const Employees = () => {
       const requestOptions = {
         method: "POST",
         headers: headers,
-        body: JSON.stringify({firstName, lastName, email}),
+        body: JSON.stringify({ firstName, lastName, email }),
       }
       fetch("/admin/register-cleaner", requestOptions)
         .then((response) => response.json())
@@ -74,7 +81,6 @@ export const Employees = () => {
           setNewEmployeeError(data.error)
         })
     }
-
     setOpen(false);
   }
 
@@ -93,12 +99,13 @@ export const Employees = () => {
         .then(data => {
 
           data.map((item) => {
-            let empl = {
+            let employee = {
+              id: item.id,
               firstName: item.first_name,
               lastName: item.last_Name,
               email: item.email,
             }
-            setEmployees(employees => [...employees, empl])
+            setEmployees(employees => [...employees, employee])
           })
         })
     } else {
@@ -107,17 +114,16 @@ export const Employees = () => {
   }, [newEmployeeError])
   return (
     <div className="Employees">
-        // wrapping container with theme & size
-      <div
-        className="ag-theme-quartz-dark" // applying the Data Grid theme
-        style={{ height: 500 }} // the Data Grid will fill the size of the parent container
-      >
-        <AgGridReact
-          rowData={employees}
-          columnDefs={colDefs}
-          defaultColDef={defaultColDef}
+      <Paper sx={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={employees}
+          columns={columns}
+          initialState={{ pagination: { paginationModel } }}
+          pageSizeOptions={[5, 10]}
+          checkboxSelection
+          sx={{ border: 0 }}
         />
-      </div>
+      </Paper>
       <Fab
         icon={<IoMdAdd />}
         onClick={addEmployee}
