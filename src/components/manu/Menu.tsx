@@ -5,10 +5,16 @@ import { FaUsers } from "react-icons/fa";
 import './menu.scss'
 import { Dialog } from "@mui/material";
 import { RegsterUserDialog } from "../dialogs/RegisterUserDialog.tsx";
+import { LoginDialog } from "../dialogs/LoginDialog.tsx";
 
 export const Menu = () => {
-  const [openDialog, setOpenDialog] = useState(false)
-
+  const [openRegisterDialog, setOpenRegisterDialog] = useState(false)
+  const [openLoginDialog, setOpenLoginDialog] = useState(false)
+  
+  const handleOpenRegister = () => {
+     setOpenRegisterDialog(true)
+     setOpenLoginDialog(false)
+  }
   return (
     <div className="menu">
       <div className="item">
@@ -34,12 +40,17 @@ export const Menu = () => {
         <div className="line" />
         <div className="login-box">
           <span>Login to see more options.</span>
-          <div className="login-button" onClick={() => setOpenDialog(true)}>
+          <div className="login-button" onClick={() => setOpenLoginDialog(true)}>
             <span className="item-title">Login</span>
           </div>
         </div>
       </div>
-      <RegsterUserDialog open={openDialog} onClose={(isOpen) => setOpenDialog(isOpen)} />
+      <RegsterUserDialog open={openRegisterDialog} onClose={(isOpen) => setOpenRegisterDialog(isOpen)} />
+      <LoginDialog 
+      open={openLoginDialog} 
+      onClose={(isOpen) => setOpenLoginDialog(isOpen)} 
+      onOpenRegister={() => handleOpenRegister()}
+      />
     </div>
   )
 }
