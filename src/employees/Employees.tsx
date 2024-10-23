@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useMemo, Fragment } from "react"
+import React, { useEffect, useState,} from "react"
 import { useNavigate, useOutletContext } from "react-router-dom"
-import { Fab, Action } from 'react-tiny-fab';
+import { Fab } from 'react-tiny-fab';
 import 'react-tiny-fab/dist/styles.css';
 import { IoMdAdd } from "react-icons/io";
-
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -11,22 +10,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Input } from "../components/input/Input.tsx";
 import "./employees.scss"
 import { Box, Grid2, Paper } from "@mui/material";
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef,  GridRowId, GridRowsProp} from '@mui/x-data-grid';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import {GridActionsCellItem,} from '@mui/x-data-grid';
 
 
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'firstName', headerName: 'First name', width: 130 },
-  { field: 'lastName', headerName: 'Last name', width: 130 },
-  {
-    field: 'email',
-    headerName: 'email',
-    type: 'string',
-    width: 90,
-  },
-];
-
-const paginationModel = { page: 0, pageSize: 5 };
 
 export interface Employee {
   id: number;
@@ -36,11 +25,14 @@ export interface Employee {
 }
 
 export const Employees = () => {
+  const initial: GridRowsProp = [{ id: 0, firstName: "", lastName: "", email: "" }] 
+
   const { employee } = useOutletContext()
   const navigate = useNavigate()
 
-  const [employees, setEmployees] = useState([{ id: 0, firstName: "", lastName: "", email: "" }])
+  const [employees, setEmployees] = useState(initial)
   const [newEmployeeError, setNewEmployeeError] = useState(true)
+
 
   const addEmployee = () => {
     setOpen(true);
@@ -48,14 +40,6 @@ export const Employees = () => {
   }
 
   const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -112,6 +96,53 @@ export const Employees = () => {
       navigate("/")
     }
   }, [newEmployeeError])
+
+  const handleDeleteEmployee = (id) => () => {
+    console.log(id)
+  }
+
+  const handleEditEmployee = (id) => () => {
+    console.log(id)
+  }
+
+
+  const columns: GridColDef[] = [
+    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'firstName', headerName: 'First name', width: 130 },
+    { field: 'lastName', headerName: 'Last name', width: 130 },
+    {
+      field: 'email',
+      headerName: 'email',
+      type: 'string',
+      width: 90,
+    },
+    {
+      field: 'actions',
+      type: 'actions',
+      headerName: 'Actions',
+      width: 100,
+      cellClassName: 'actions',
+      getActions: ({ id }) => {
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={ handleEditEmployee(id)}
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={handleDeleteEmployee(id)}
+            color="inherit"
+          />,
+        ];
+      },
+    }
+  ];
+  
+  const paginationModel = { page: 0, pageSize: 5 };
   return (
     <div className="Employees">
       <Paper sx={{ height: 400, width: '100%' }}>
