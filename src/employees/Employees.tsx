@@ -31,12 +31,12 @@ export const Employees = () => {
   const navigate = useNavigate()
 
   const [employees, setEmployees] = useState(initial)
-  const [newEmployeeError, setNewEmployeeError] = useState(true)
+  const [updateList, setUpdateList] = useState(false)
 
 
   const addEmployee = () => {
     setOpen(true);
-    setNewEmployeeError(true)
+    setUpdateList(false)
   }
 
   const [open, setOpen] = React.useState(false);
@@ -62,7 +62,7 @@ export const Employees = () => {
       fetch("/admin/register-cleaner", requestOptions)
         .then((response) => response.json())
         .then(data => {
-          setNewEmployeeError(data.error)
+          setUpdateList(!data.error)
         })
     }
     setOpen(false);
@@ -95,10 +95,27 @@ export const Employees = () => {
     } else {
       navigate("/")
     }
-  }, [newEmployeeError])
+  }, [updateList])
 
   const handleDeleteEmployee = (id) => () => {
-    console.log(id)
+    if (employee.accessToken !== "") {
+      const headers = new Headers()
+      headers.append('Content-Type', 'application/json')
+      headers.append('Authorization', 'Bearer ' + employee.accessToken)
+
+      const requestOptions = {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({ id }),
+      }
+      fetch("/admin/remove-cleaner", requestOptions)
+        .then((response) => response.json())
+        .then(data => {
+          if (data !== -1) {
+            setUpdateList(true)
+          }
+        })
+    }
   }
 
   const handleEditEmployee = (id) => () => {
