@@ -9,14 +9,6 @@ import { RegsterUserDialog } from "../dialogs/RegisterUserDialog.tsx";
 export const Menu = () => {
   const [openDialog, setOpenDialog] = useState(false)
 
-  const opneLoginDialog = () => {
-    console.log(openDialog)
-    if (!openDialog) {
-      setOpenDialog(true)
-    } else {
-      setOpenDialog(false)
-    }
-  }
   return (
     <div className="menu">
       <div className="item">
@@ -42,12 +34,12 @@ export const Menu = () => {
         <div className="line" />
         <div className="login-box">
           <span>Login to see more options.</span>
-          <div className="login-button" onClick={() => opneLoginDialog()}>
+          <div className="login-button" onClick={() => setOpenDialog(true)}>
             <span className="item-title">Login</span>
           </div>
         </div>
       </div>
-      <RegsterUserDialog open={openDialog}/>
+      <RegsterUserDialog open={openDialog} onClose={(isOpen) => setOpenDialog(isOpen)} />
     </div>
   )
 }
