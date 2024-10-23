@@ -20,7 +20,6 @@ function App() {
 
   const handleUser = (newUser) => {
     setEmployee(newUser)
-    
   }
   const Layout = () => {
     useEffect(() => {
@@ -35,7 +34,7 @@ function App() {
         <Navbar userName={userName} />
         <div className="container">
           <div className="menuContainer">
-            <Menu />
+            <Menu onUser={handleUser}/>
           </div>
           <div className="contentContainer">
             <Outlet context={{
@@ -68,10 +67,6 @@ function App() {
           path: "/admin",
           element: <Admin />,
         },
-        {
-          path: "/login",
-          element: <Login onUser={handleUser} />
-        }
       ]
     },
   ]);

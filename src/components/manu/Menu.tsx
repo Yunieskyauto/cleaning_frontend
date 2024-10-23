@@ -7,7 +7,7 @@ import { Dialog } from "@mui/material";
 import { RegsterUserDialog } from "../dialogs/RegisterUserDialog.tsx";
 import { LoginDialog } from "../dialogs/LoginDialog.tsx";
 
-export const Menu = () => {
+export const Menu = (props) => {
   const [openRegisterDialog, setOpenRegisterDialog] = useState(false)
   const [openLoginDialog, setOpenLoginDialog] = useState(false)
   
@@ -45,11 +45,15 @@ export const Menu = () => {
           </div>
         </div>
       </div>
-      <RegsterUserDialog open={openRegisterDialog} onClose={(isOpen) => setOpenRegisterDialog(isOpen)} />
+      <RegsterUserDialog 
+      open={openRegisterDialog} 
+      onClose={(isOpen) => setOpenRegisterDialog(isOpen)} 
+      />
       <LoginDialog 
       open={openLoginDialog} 
       onClose={(isOpen) => setOpenLoginDialog(isOpen)} 
       onOpenRegister={() => handleOpenRegister()}
+      onUser={(user) => {props.onUser(user)}}
       />
     </div>
   )
