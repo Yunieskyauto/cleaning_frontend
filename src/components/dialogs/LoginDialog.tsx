@@ -1,18 +1,10 @@
 import React, { useEffect, useState, } from "react"
-import { useNavigate, useOutletContext } from "react-router-dom"
-import { Fab } from 'react-tiny-fab';
+import { useNavigate} from "react-router-dom"
 import 'react-tiny-fab/dist/styles.css';
-import { IoMdAdd } from "react-icons/io";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogTitle from '@mui/material/DialogTitle';
-import { Input } from "../input/Input.tsx";
-import { Box, Grid2, Paper, TextField } from "@mui/material";
-import { DataGrid, GridColDef, GridRowId, GridRowsProp } from '@mui/x-data-grid';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import { GridActionsCellItem, } from '@mui/x-data-grid';
+import { Box, TextField } from "@mui/material";
+
 
 import "./../../styles/variables.scss"
 

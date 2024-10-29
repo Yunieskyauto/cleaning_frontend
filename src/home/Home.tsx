@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import "./home.scss"
 export const Home = () => {
   const { employee } = useOutletContext();

@@ -3,7 +3,6 @@ import { Link } from "react-router-dom"
 import { IoIosHome } from "react-icons/io";
 import { FaUsers } from "react-icons/fa";
 import './menu.scss'
-import { Dialog } from "@mui/material";
 import { RegsterUserDialog } from "../dialogs/RegisterUserDialog.tsx";
 import { LoginDialog } from "../dialogs/LoginDialog.tsx";
 
