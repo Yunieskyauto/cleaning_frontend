@@ -13,7 +13,7 @@ import { DataGrid, GridColDef, GridRowId, GridRowsProp } from '@mui/x-data-grid'
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { GridActionsCellItem, } from '@mui/x-data-grid';
-import "./login-dialog.scss"
+
 import "./../../styles/variables.scss"
 
 export const LoginDialog = (props) => {
