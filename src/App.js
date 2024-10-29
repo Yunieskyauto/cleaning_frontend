@@ -14,23 +14,37 @@ import {
   useNavigate
 } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
   const [employee, setEmployee] = useState({ "firstName": "", "lastName": "", "accessToken": "", "accessLevel": "" })
   const [userName, setUserName] = useState('')
-
+  
+  
   const handleUser = (newUser) => {
     setEmployee(newUser)
   }
   const Layout = () => {
     useEffect(() => {
-      if (employee.accessLevel === 1 && employee.accessToken !== "") {
-        setUserName(employee.firstName + " " + employee.lastName)
-        navigate("/")
+      if ( employee.accessToken !== "") {
+        toast.success('Login success!', {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: false,
+          theme: "light",
+          });
+        if (employee.accessLevel === 1 ) {
+          setUserName(employee.firstName + " " + employee.lastName)
+          navigate("/")
+        }
       }
     }, [employee])
     const navigate = useNavigate();
     return (
       <div className="main">
+        
         <Navbar userName={userName} />
         <div className="container">
           <div className="menuContainer">
@@ -42,6 +56,7 @@ function App() {
             }} />
           </div>
         </div>
+        <ToastContainer style={{width: "100%" }}/>
       </div>
     )
   }
