@@ -29,6 +29,9 @@ export const LoginDialog = (props) => {
     const [emailErrorMsg, setEmailErrorMsg] = useState('')
     const [passwordErrorMsg, setPasswordErrorMsg] = useState('')
 
+    const [isEmailInvalid, setIsEmailInvalid] = useState(false)
+    const [isPasswordInvalid, setIsPasswordInvalid] = useState(false)
+
     const navigate = useNavigate()
 
     const handleEmailChange = (e: string) => {
@@ -68,15 +71,15 @@ export const LoginDialog = (props) => {
             .then((response) => response.json())
             .then((data => {
                 if (data.Errors !== undefined) {
-
+                    console.log(data)
                     setEmail(data.Data.email);
                     if (data.Errors.email !== undefined) {
                         setEmailErrorMsg(data.Errors.email[0]);
-                        setPassword("")
+                        setIsEmailInvalid(true)
                     }
                     if (data.Errors.password !== undefined) {
                         setPasswordErrorMsg(data.Errors.password[0]);
-                        setPassword("")
+                        setIsPasswordInvalid(true)
                     }
                 }
                 console.log(data)
@@ -88,7 +91,7 @@ export const LoginDialog = (props) => {
                         accessToken: data.token.access_token,
                         accessLevel: data.access_level
                     })
-                 
+
                 }
             }))
             .catch(err => {
@@ -126,7 +129,7 @@ export const LoginDialog = (props) => {
             <Box
                 sx={{
                     width: 450,
-                    height: 500,
+                    height: 600,
                     display: "flex",
                     justifyContent: "center",
                     flexDirection: "column",
@@ -134,7 +137,7 @@ export const LoginDialog = (props) => {
                 <Box
                     sx={{
                         width: "100%",
-                        height: "40%",
+                        height: "35%",
                         display: "flex",
                         justifyContent: "center",
                         flexDirection: "column",
@@ -159,45 +162,62 @@ export const LoginDialog = (props) => {
                     >Login to your account below</span>
                 </Box>
                 <Box sx={{
+                    width: "100%",
+                    height: "65%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    flexDirection: "column",
+                    background: "#e0e0e0",
+                }} >
+                    <Box sx={{
+                        marginTop: 5,
                         width: "100%",
-                        height: "60%",
+                        height: 70,
                         display: "flex",
-                        justifyContent: "space-between",
-                        flexDirection: "column",
-                        background: "#e0e0e0",
-                    }} >  
-                <TextField
-                        required
-                        error={false}
-                        id="outlined-error-helper-text"
-                        helperText={""}
-                        label="enter email..."
-                        variant="outlined"
-                        type="email"
-                        sx={{ marginLeft: 4, marginRight: 4, marginTop: 3 }}
-                        onChange={(e: any) => { handleEmailChange(e.target.value) }}
-                    />
-                    <TextField
-                        required
-                        error={false}
-                        id="outlined-error-helper-text"
-                        helperText={""}
-                        label="enter password.."
-                        variant="outlined"
-                        type="password"
-                        sx={{ marginLeft: 4, marginRight: 4, marginTop: 3 }}
-                        onChange={(e: any) => { handlePasswordChange(e.target.value) }}
-                    />
+                        justifyContent: "center"
+                    }} >
+                        <TextField
+                            required
+                            error={isEmailInvalid}
+                            id="outlined-error-helper-text"
+                            helperText={emailErrorMsg}
+                            label="enter email..."
+                            variant="outlined"
+                            type="email"
+                            sx={{ marginLeft: 4, marginRight: 4, height: 60, width: "100%" }}
+                            onChange={(e: any) => { handleEmailChange(e.target.value) }}
+                        />
+                    </Box>
+
+                    <Box sx={{
+                        width: "100%",
+                        height: 70,
+                        display: "flex",
+                        justifyContent: "center"
+                    }} >
+                        <TextField
+                            required
+                            error={isPasswordInvalid}
+                            id="outlined-error-helper-text"
+                            helperText={passwordErrorMsg}
+                            label="enter password.."
+                            variant="outlined"
+                            type="password"
+                            sx={{ marginLeft: 4, marginRight: 4, height: 60, width: "100%" }}
+                            onChange={(e: any) => { handlePasswordChange(e.target.value) }}
+                        />
+                    </Box>
+
 
                     <Button sx={{
-                            marginLeft: 4,
-                            marginRight: 4,
-                            marginTop: 3,
-                            background: "#37474f",
-                            color: "#e0e0e0",
-                            borderRadius: 2,
-                            height: 50
-                        }}
+                        marginLeft: 4,
+                        marginRight: 4,
+                        marginTop: 3,
+                        background: "#37474f",
+                        color: "#e0e0e0",
+                        borderRadius: 2,
+                        height: 50
+                    }}
                         type="submit"
                         onClick={handleSubmit}
                     >Login</Button>
@@ -209,8 +229,8 @@ export const LoginDialog = (props) => {
                             marginBottom: 3,
                             marginTop: 3,
                         }} >
-                        <span style={{ color: "#37474f",paddingRight: 10 }} >Do not have an account?</span>
-                        <span style={{ color: "#01579b", cursor: "pointer" }}  onClick={openRegister}>Sign up for free</span>
+                        <span style={{ color: "#37474f", paddingRight: 10 }} >Do not have an account?</span>
+                        <span style={{ color: "#01579b", cursor: "pointer" }} onClick={openRegister}>Sign up for free</span>
                     </Box>
                 </Box>
             </Box>
