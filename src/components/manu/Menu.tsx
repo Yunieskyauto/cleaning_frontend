@@ -52,7 +52,9 @@ export const Menu = (props) => {
       open={openLoginDialog} 
       onClose={(isOpen) => setOpenLoginDialog(isOpen)} 
       onOpenRegister={() => handleOpenRegister()}
-      onUser={(user) => {props.onUser(user)}}
+      onUser={(user) => {
+        props.onUser(user)
+      }}
       />
     </div>
   )

@@ -23,11 +23,22 @@ function App() {
   
   
   const handleUser = (newUser) => {
-    setEmployee(newUser)
+    
+    if (newUser !== undefined) {
+      setEmployee(newUser)
+    } else {
+      toast.error('Could not login', {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        theme: "light",
+        });
+    }
   }
   const Layout = () => {
     useEffect(() => {
-      if ( employee.accessToken !== "") {
+      if (employee.accessToken !== "") {
         toast.success('Login success!', {
           position: "top-center",
           autoClose: 1000,

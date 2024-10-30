@@ -4,8 +4,6 @@ import 'react-tiny-fab/dist/styles.css';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import { Box, TextField } from "@mui/material";
-
-
 import "./../../styles/variables.scss"
 
 export const LoginDialog = (props) => {
@@ -63,7 +61,6 @@ export const LoginDialog = (props) => {
             .then((response) => response.json())
             .then((data => {
                 if (data.Errors !== undefined) {
-                    console.log(data)
                     setEmail(data.Data.email);
                     if (data.Errors.email !== undefined) {
                         setEmailErrorMsg(data.Errors.email[0]);
@@ -74,17 +71,19 @@ export const LoginDialog = (props) => {
                         setIsPasswordInvalid(true)
                     }
                 }
-                console.log(data)
-                if (data.access_token !== "") {
-                    // get user to App.js
-                    props.onUser({
-                        firstName: data.first_name,
-                        lastName: data.last_name,
-                        accessToken: data.token.access_token,
-                        accessLevel: data.access_level
-                    })
-
-                }
+                if (data.error) {
+                    props.onUser(undefined)
+                } else {
+                    if (data.access_token !== "") {
+                        // get user to App.js
+                        props.onUser({
+                            firstName: data.first_name,
+                            lastName: data.last_name,
+                            accessToken: data.token.access_token,
+                            accessLevel: data.access_level
+                        })
+                    }
+                }   
             }))
             .catch(err => {
                 console.log(err);
