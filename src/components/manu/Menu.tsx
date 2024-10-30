@@ -24,7 +24,11 @@ export const Menu = (props) => {
             <span className="item-title">Home</span>
           </Link>
         </div>
-        <div className="item-box">
+        {
+          props.userLevel === 1 &&
+          (
+            <>
+               <div className="item-box">
           <Link to='/employees' className="link">
             <FaUsers className="icon" />
             <span className="item-title">Employees</span>
@@ -36,6 +40,10 @@ export const Menu = (props) => {
             <span className="item-title">Costumers</span>
           </Link>
         </div>
+            </>
+          )
+        }
+     
         <div className="line" />
         <div className="login-box">
           <span>Login to see more options.</span>

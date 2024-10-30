@@ -21,11 +21,12 @@ function App() {
   const [employee, setEmployee] = useState({ "firstName": "", "lastName": "", "accessToken": "", "accessLevel": "" })
   const [userName, setUserName] = useState('')
   
-  
+  const [userLevel, setUserLevel] = useState(0)
   const handleUser = (newUser) => {
     
     if (newUser !== undefined) {
       setEmployee(newUser)
+      setUserLevel(newUser.accessLevel)
     } else {
       toast.error('Could not login', {
         position: "top-center",
@@ -51,6 +52,7 @@ function App() {
           navigate("/")
         }
       }
+      console.log(userLevel)
     }, [employee])
     const navigate = useNavigate();
     return (
@@ -59,7 +61,7 @@ function App() {
         <Navbar userName={userName} />
         <div className="container">
           <div className="menuContainer">
-            <Menu onUser={handleUser}/>
+            <Menu onUser={handleUser} userLevel={userLevel}/>
           </div>
           <div className="contentContainer">
             <Outlet context={{
