@@ -9,10 +9,10 @@ import { LoginDialog } from "../dialogs/LoginDialog.tsx";
 export const Menu = (props) => {
   const [openRegisterDialog, setOpenRegisterDialog] = useState(false)
   const [openLoginDialog, setOpenLoginDialog] = useState(false)
-  
+
   const handleOpenRegister = () => {
-     setOpenRegisterDialog(true)
-     setOpenLoginDialog(false)
+    setOpenRegisterDialog(true)
+    setOpenLoginDialog(false)
   }
   return (
     <div className="menu">
@@ -28,22 +28,22 @@ export const Menu = (props) => {
           props.userLevel === 1 &&
           (
             <>
-               <div className="item-box">
-          <Link to='/employees' className="link">
-            <FaUsers className="icon" />
-            <span className="item-title">Employees</span>
-          </Link>
-        </div>
-        <div className="item-box">
-          <Link to='/customers' className="link">
-            <FaUsers className="icon" />
-            <span className="item-title">Costumers</span>
-          </Link>
-        </div>
+              <div className="item-box">
+                <Link to='/employees' className="link">
+                  <FaUsers className="icon" />
+                  <span className="item-title">Employees</span>
+                </Link>
+              </div>
+              <div className="item-box">
+                <Link to='/customers' className="link">
+                  <FaUsers className="icon" />
+                  <span className="item-title">Costumers</span>
+                </Link>
+              </div>
             </>
           )
         }
-     
+
         <div className="line" />
         <div className="login-box">
           <span>Login to see more options.</span>
@@ -52,17 +52,17 @@ export const Menu = (props) => {
           </div>
         </div>
       </div>
-      <RegsterUserDialog 
-      open={openRegisterDialog} 
-      onClose={(isOpen) => setOpenRegisterDialog(isOpen)} 
+      <RegsterUserDialog
+        open={openRegisterDialog}
+        onClose={(isOpen) => setOpenRegisterDialog(isOpen)}
       />
-      <LoginDialog 
-      open={openLoginDialog} 
-      onClose={(isOpen) => setOpenLoginDialog(isOpen)} 
-      onOpenRegister={() => handleOpenRegister()}
-      onUser={(user) => {
-        props.onUser(user)
-      }}
+      <LoginDialog
+        open={openLoginDialog}
+        onClose={(isOpen) => setOpenLoginDialog(isOpen)}
+        onOpenRegister={() => handleOpenRegister()}
+        onUser={(user) => {
+          props.onUser(user)
+        }}
       />
     </div>
   )
