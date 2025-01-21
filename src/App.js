@@ -1,4 +1,4 @@
-import { Admin } from "./admin/Admin.tsx";
+import { Invited } from "./admin/Invited.tsx";
 import { Menu } from "./components/manu/Menu.tsx";
 import { Employees } from "./employees/Employees.tsx";
 import { Users } from "./users/Users.tsx"
@@ -92,8 +92,8 @@ function App() {
           element: <Employees />,
         },
         {
-          path: "/admin",
-          element: <Admin />,
+          path: "/invite",
+          element: <Invited/>,
         },
       ]
     },
