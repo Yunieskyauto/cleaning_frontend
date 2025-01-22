@@ -43,8 +43,6 @@ export const RegisterDialog = ({open, userInfo, onClose}) => {
         setEmailDisabled(true)
       }
     }
-
-    //console.log("Form Submitted:", formState);
   }, [open, userInfo]);
 
   const handleInputChange = (event) => {
@@ -52,17 +50,44 @@ export const RegisterDialog = ({open, userInfo, onClose}) => {
     setFormState({ ...formState, [name]: value });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const { first_name, last_name, email, password } = formState;
-    if (!first_name || !last_name || !email || !password) {
-      alert("Please fill out all fields.");
-      return;
-    }
+    try {
+        // Debugging the form state and user info
+        console.log("user:", { id: userInfo.id, password: formState.password });
 
-    handleCloseDialog(false);
-  };
+        // Make the POST request
+        const res = await fetch("/password-set", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json", // Indicates JSON data
+            },
+            body: JSON.stringify({
+                id: userInfo.id, // Correctly pass the ID
+                password: formState.password, // Correctly pass the password
+            }), // Properly stringify the data
+        });
+
+        // Check for response status
+        if (!res.ok) {
+            const errorMessage = `Failed to set password: ${res.status} ${res.statusText}`;
+            throw new Error(errorMessage);
+        }
+
+        // Parse the JSON response
+        const data = await res.json();
+        console.log("response:", data); // Debugging the response
+
+        // You can add further actions here (e.g., updating state, showing a success message, etc.)
+    } catch (error) {
+        console.error("Error during password set:", error);
+    } finally {
+        // Always close the dialog, whether the request succeeds or fails
+        handleCloseDialog(false);
+    }
+};
+
 
   const handleCloseDialog = (isOpen) => {
     setOpenDialog(isOpen);

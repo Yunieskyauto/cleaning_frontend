@@ -10,6 +10,7 @@ export const Invited = () => {
         firstName: "",
         lastName: "",
         email: "",
+        id: ""
     });
 
     useEffect(() => {
@@ -33,6 +34,7 @@ export const Invited = () => {
                     firstName: data.first_name || "",
                     lastName: data.last_name || "",
                     email: data.email || "",
+                    id: data.id || ""
                 });
             
             } catch (error) {
