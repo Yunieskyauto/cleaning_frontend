@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams,  useNavigate } from 'react-router-dom';
 import { RegisterDialog } from '../components/dialogs/RegisterDialog.tsx';
 
 export const Invited = () => {
+
+    const navigate = useNavigate()
+
     const [searchParams] = useSearchParams(); // React hook to access query parameters
     const inviteToken = searchParams.get("token"); // Extract the value of 'token'
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -39,6 +42,7 @@ export const Invited = () => {
             
             } catch (error) {
                 console.error("Error:", error);
+                navigate("/")  //TODO add failed alert
             }
         };
 
