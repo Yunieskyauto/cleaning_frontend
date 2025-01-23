@@ -41,82 +41,167 @@ export const Employees = () => {
 
   const [open, setOpen] = React.useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+  
+    // Extract and parse form data
     const formData = new FormData(event.currentTarget);
-    const formJson = Object.fromEntries((formData as any).entries());
-    const email = formJson.email;
-    const firstName = formJson.first_name;
-    const lastName = formJson.last_name;
-
-    if (employee.accessToken !== "") {
-      const headers = new Headers()
-      headers.append('Content-Type', 'application/json')
-      headers.append('Authorization', 'Bearer ' + employee.accessToken)
-
-      const requestOptions = {
+    const { email, first_name: firstName, last_name: lastName } = Object.fromEntries(formData.entries()) as {
+      email: string;
+      first_name: string;
+      last_name: string;
+    };
+  
+    // Early exit if access token is missing
+    if (!employee.accessToken) {
+      console.error("Error: Access token is missing.");
+      return;
+    }
+  
+    try {
+      // Create headers
+      const headers = new Headers({
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${employee.accessToken}`,
+      });
+  
+      // Build request options
+      const requestOptions: RequestInit = {
         method: "POST",
-        headers: headers,
+        headers,
         body: JSON.stringify({ firstName, lastName, email }),
+      };
+  
+      // Make the API call
+      const response = await fetch("/admin/register-cleaner", requestOptions);
+  
+      // Check if the response is OK
+      if (!response.ok) {
+        throw new Error(`Failed to register cleaner. Status: ${response.status} ${response.statusText}`);
       }
-      fetch("/admin/register-cleaner", requestOptions)
-        .then((response) => response.json())
-        .then(data => {
-          setUpdateList(!data.error)
-        })
+  
+      // Parse the response JSON
+      const data = await response.json();
+  
+      // Handle successful response
+      if (!data.error) {
+        console.log("Registration successful:", data);
+         // Map and set employees in one state update
+         const formattedEmployees = data.data.cleanerList.map((item: any) => ({
+          id: item.id,
+          firstName: item.first_name,
+          lastName: item.last_name,
+          email: item.email,
+        }));
+        setEmployees(formattedEmployees);
+      } else {
+        console.error("Server returned an error:", data.error);
+      }
+    } catch (error) {
+      console.error("An error occurred during registration:", error);
+    } finally {
+      // Ensure the dialog closes in all cases
+      setOpen(false);
     }
-    setOpen(false);
-  }
-
+  };
+  
+  
   useEffect(() => {
-    if (employee.accessToken !== "") {
-      const headers = new Headers()
-      headers.append('Content-Type', 'application/json')
-      headers.append('Authorization', 'Bearer ' + employee.accessToken)
-
-      const requestOptions = {
-        method: "GET",
-        headers: headers,
-      }
-      fetch("/admin/employees", requestOptions)
-        .then((response) => response.json())
-        .then(data => {
-
-          data.map((item) => {
-            let employee = {
-              id: item.id,
-              firstName: item.first_name,
-              lastName: item.last_Name,
-              email: item.email,
-            }
-            setEmployees(employees => [...employees, employee])
-          })
-        })
-    } else {
-      navigate("/")
+    // Early exit if the access token is not available
+    if (!employee.accessToken) {
+      navigate("/");
+      return;
     }
-  }, [updateList])
+  
+    // Helper function to create headers
+    const createHeaders = () => {
+      const headers = new Headers();
+      headers.append("Content-Type", "application/json");
+      headers.append("Authorization", `Bearer ${employee.accessToken}`);
+      return headers;
+    };
+  
+    // Fetch employee data
+    const fetchEmployees = async () => {
+      try {
+        const headers = createHeaders();
+        const response = await fetch("/admin/employees", { method: "GET", headers });
+  
+        if (!response.ok) {
+          throw new Error(`Failed to fetch employees: ${response.statusText}`);
+        }
+  
+        const data = await response.json();
+  
+        // Map and set employees in one state update
+        const formattedEmployees = data.map((item: any) => ({
+          id: item.id,
+          firstName: item.first_name,
+          lastName: item.last_name,
+          email: item.email,
+        }));
+  
+        setEmployees(formattedEmployees);
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+      }
+    };
+  
+    fetchEmployees();
+  }, [updateList]);
+  
 
-  const handleDeleteEmployee = (id) => () => {
-    if (employee.accessToken !== "") {
-      const headers = new Headers()
-      headers.append('Content-Type', 'application/json')
-      headers.append('Authorization', 'Bearer ' + employee.accessToken)
-
-      const requestOptions = {
+  const handleDeleteEmployee = (id: number) => async () => {
+    // Early exit if access token is missing
+    if (!employee.accessToken) {
+      console.error("Error: Access token is missing.");
+      return;
+    }
+  
+    try {
+      // Create headers
+      const headers = new Headers({
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${employee.accessToken}`,
+      });
+  
+      // Build request options
+      const requestOptions: RequestInit = {
         method: "POST",
-        headers: headers,
+        headers,
         body: JSON.stringify({ id }),
+      };
+  
+      // Make the API call
+      const response = await fetch("/admin/remove-cleaner", requestOptions);
+  
+      // Check if the response is OK
+      if (!response.ok) {
+        throw new Error(`Failed to delete employee. Status: ${response.status} ${response.statusText}`);
       }
-      fetch("/admin/remove-cleaner", requestOptions)
-        .then((response) => response.json())
-        .then(data => {
-          if (data !== -1) {
-            setUpdateList(true)
-          }
-        })
+  
+      const data = await response.json();
+  
+      // Update the list if deletion was successful
+      if (data !== -1) {
+        console.log(data);
+        // Map and set employees in one state update
+        const formattedEmployees = data.data.map((item: any) => ({
+          id: item.id,
+          firstName: item.first_name,
+          lastName: item.last_name,
+          email: item.email,
+        }));
+  
+        setEmployees(formattedEmployees); 
+      } else {
+        console.error("Server returned an error during deletion:", data);
+      }
+    } catch (error) {
+      console.error("An error occurred during employee deletion:", error);
     }
-  }
+  };
+  
 
   const handleEditEmployee = (id) => () => {
     console.log(id)
