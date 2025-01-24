@@ -61,6 +61,8 @@
             border-radius: 8px; /* Add rounded corners */
             transition: background-color 0.3s ease, color 0.3s ease; /* Smooth hover effect */
           }
+
+      
   
           &:hover {
             background: $hover-background-color;
@@ -81,6 +83,59 @@
         }
       }
     }
+
+.sign-in-section {
+  padding: 20px 16px;
+  border-top: 1px solid $soft-color;
+  border-bottom: 1px solid $soft-color;
+  margin: 16px 0;
+
+  display: flex;
+  flex-direction: column; /* Stack text and button vertically */
+  align-items: flex-start; /* Align content to the start (left) */
+  gap: 12px; /* Add spacing between text and button */
+
+  .sign-in-text {
+    color: $text-color-primary;
+    font-size: 14px;
+  }
+
+  .sign-in-button {
+    background-color: #1e2a38; /* Dark blue background */
+    color: $soft-color; /* Light blue text */
+    border: none;
+    padding: 10px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Space between icon and text */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%; /* Make button take full width */
+    text-align: center;
+
+    .icon {
+      font-size: 16px;
+      color: #70a9ff; /* Same color as text */
+    }
+
+    &:hover {
+      background-color: #16222b; /* Slightly darker blue */
+      transform: translateY(-2px); /* Lift effect */
+    }
+
+    &:active {
+      background-color: #122027; /* Even darker for active state */
+      transform: translateY(0); /* Reset lift on click */
+    }
+  }
+}
+
+
   
     .menu-footer {
       margin-top: auto;
