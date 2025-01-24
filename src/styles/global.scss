@@ -1,28 +1,62 @@
 @import './variables.scss';
 
 .main {
-  background-color: $dark-main-color;
-  font-family: 'Inter' sans-serif;
-  color: $light-sea-blue;
-  height: 100%;
-  width: 100%;
-  position: fixed;
-}
-
-.container {
     display: flex;
-}
-
-.menuContainer {
-    width: 160px;
-    padding: 5px 20px;
-    background: $medium-dark-gray;
-    border-right: solid gray;
-    border-width: 0.1px;
+    flex-direction: column;
     height: 100vh;
-}
+    background-color: $background-color; // Background color for the entire layout
+  
+    .container {
+      display: flex;
+      flex: 1; // Occupies the full height below the header
+      overflow: hidden;
+  
+      .menuContainer {
+        width: 300px; // Fixed width for the sidebar
+        border-right: 1px solid #e0e0e0; // Divider line
+        overflow-y: auto; // Allows scrolling if sidebar content overflows
+        display: flex;
+        flex-direction: column;
+  
+        @media (max-width: 768px) {
+          width: 220px; // Reduce width for smaller screens
+        }
+      }
+  
+      .contentContainer {
+        flex: 1; /* Takes up remaining space */
+        padding: 70px 20px 20px; /* Top, horizontal (left and right), and bottom padding */
+        overflow-y: auto; /* Ensures scrolling if content is long */
+        display: flex;
+        flex-direction: column;
+  
+        @media (max-width: 768px) {
+          padding: 10px; // Reduce padding for smaller screens
+        }
+        .cardContainer {
+            background-color: white;
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+        }
+      }
+    }
+  
+    // ToastContainer styles
+    .ToastContainer {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: calc(100% - 40px); // Leave some margin on mobile
+      max-width: 400px;
+      z-index: 9999;
+  
+      @media (max-width: 768px) {
+        right: 10px;
+        bottom: 10px;
+      }
+    }
+  }
+  
 
-.contentContainer {
-    padding: 5px 20px;
-    width: 100%;
-}
