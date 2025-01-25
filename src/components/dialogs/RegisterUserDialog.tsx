@@ -7,20 +7,18 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
 
   // Form state
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    password: "",
-    additionalField: "",
+    password: ""
   });
 
   // Error state
   const [errors, setErrors] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     email: "",
-    password: "",
-    additionalField: "",
+    password: ""
   });
 
   // Handle input changes
@@ -33,16 +31,13 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
   const validateInputs = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const newErrors = {
-      firstName: formData.firstName ? "" : "First name is required.",
-      lastName: formData.lastName ? "" : "Last name is required.",
+      first_name: formData.first_name ? "" : "First name is required.",
+      last_name: formData.last_name ? "" : "Last name is required.",
       email: emailRegex.test(formData.email) ? "" : "Invalid email address.",
       password:
         formData.password.length >= 6
           ? ""
           : "Password must be at least 6 characters.",
-      additionalField: formData.additionalField
-        ? ""
-        : "This field is required.",
     };
     setErrors(newErrors);
     return Object.values(newErrors).every((error) => error === "");
@@ -51,10 +46,12 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
   // Handle form submission
   const handleSubmit = (event) => {
     event.preventDefault();
+   console.log("Hello worlld")
+    
     if (!validateInputs()) return;
 
     // Mock API call
-    fetch("/register", {
+    fetch("/sign-up-user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -76,23 +73,22 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
       .catch((err) => {
         console.error("Error during registration:", err);
       });
+      
   };
 
   // Close dialog
   const handleClose = () => {
     setFormData({
-      firstName: "",
-      lastName: "",
+      first_name: "",
+      last_name: "",
       email: "",
-      password: "",
-      additionalField: "",
+      password: ""
     });
     setErrors({
-      firstName: "",
-      lastName: "",
+      first_name: "",
+      last_name: "",
       email: "",
-      password: "",
-      additionalField: "",
+      password: ""
     });
     onClose(false);
   };
@@ -128,20 +124,20 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
           fullWidth
           label="First Name"
           variant="outlined"
-          value={formData.firstName}
-          onChange={(e) => handleChange("firstName", e.target.value)}
-          error={!!errors.firstName}
-          helperText={errors.firstName}
+          value={formData.first_name}
+          onChange={(e) => handleChange("first_name", e.target.value)}
+          error={!!errors.first_name}
+          helperText={errors.first_name}
           required
         />
         <TextField
           fullWidth
           label="Last Name"
           variant="outlined"
-          value={formData.lastName}
-          onChange={(e) => handleChange("lastName", e.target.value)}
-          error={!!errors.lastName}
-          helperText={errors.lastName}
+          value={formData.last_name}
+          onChange={(e) => handleChange("last_name", e.target.value)}
+          error={!!errors.last_name}
+          helperText={errors.last_name}
           required
         />
         <TextField
