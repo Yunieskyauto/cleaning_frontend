@@ -3,8 +3,6 @@ import { Box, Button, Dialog, TextField, Typography } from "@mui/material";
 
 export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
 
-  const [openRegisterDialog, setOprnRegisterDialog] = useState(false)
-
   // Form state
   const [formData, setFormData] = useState({
     first_name: "",
@@ -60,14 +58,39 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
     })
       .then((response) => response.json())
       .then((data) => {
+       
         if (data.success) {
           onRegister(); // Call parent callback
           handleClose();
         } else {
-          setErrors((prev) => ({
-            ...prev,
-            ...data.errors,
-          }));
+            // check for server error fidback in case a bad request is made
+            let last_name_error = "" 
+            let first_name_error = "" 
+            let email_error = "" 
+            let password_error = "" 
+            if (data.Errors !== undefined) {
+             if (data.Errors.email != undefined) {
+                email_error = data.Errors.email[0]
+             }
+             if (data.Errors.first_name != undefined) {
+                first_name_error = data.Errors.first_name[0]
+             }
+             if (data.Errors.last_name != undefined) {
+                last_name_error = data.Errors.last_name[0]
+             }
+             if (data.Errors.password != undefined) {
+                password_error = data.Errors.password[0]
+             }
+             setErrors((prev) => ({
+                ...prev,
+                ...{
+                    first_name: first_name_error,
+                    last_name: last_name_error,
+                    email: email_error,
+                    password: password_error
+                },
+              }));
+            }
         }
       })
       .catch((err) => {
@@ -128,7 +151,7 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
           onChange={(e) => handleChange("first_name", e.target.value)}
           error={!!errors.first_name}
           helperText={errors.first_name}
-          required
+      
         />
         <TextField
           fullWidth
@@ -138,7 +161,7 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
           onChange={(e) => handleChange("last_name", e.target.value)}
           error={!!errors.last_name}
           helperText={errors.last_name}
-          required
+         
         />
         <TextField
           fullWidth
@@ -149,7 +172,7 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
           onChange={(e) => handleChange("email", e.target.value)}
           error={!!errors.email}
           helperText={errors.email}
-          required
+   
         />
         <TextField
           fullWidth
@@ -160,7 +183,7 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
           onChange={(e) => handleChange("password", e.target.value)}
           error={!!errors.password}
           helperText={errors.password}
-          required
+       
         />
      
 
