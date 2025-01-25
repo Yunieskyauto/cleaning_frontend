@@ -16,6 +16,7 @@ import {
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import SidebarMenu from "./components/manu/SidebarManu.tsx";
 
 function App() {
   const [employee, setEmployee] = useState({ "firstName": "", "lastName": "", "accessToken": "", "accessLevel": "" })
@@ -56,17 +57,17 @@ function App() {
     }, [employee])
     const navigate = useNavigate();
     return (
-      <div className="main">
-        
-        <Navbar userName={userName} />
+      <div className="main"> 
         <div className="container">
           <div className="menuContainer">
-            <Menu onUser={handleUser} userLevel={userLevel}/>
+            <SidebarMenu />
           </div>
           <div className="contentContainer">
-            <Outlet context={{
-              employee
-            }} />
+            <div className="cardContainer">
+                <Outlet context={{
+                 employee
+                }} />
+            </div>
           </div>
         </div>
         <ToastContainer style={{width: "100%" }}/>

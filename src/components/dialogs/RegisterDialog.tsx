@@ -9,86 +9,80 @@ import {
   Typography,
 } from "@mui/material";
 
-export const RegisterDialog = ({open, userInfo, onClose}) => {
+export const RegisterDialog = ({ open, userInfo, onClose }) => {
   const [openDialog, setOpenDialog] = useState(false);
+
+  // Form state
   const [formState, setFormState] = useState({
     first_name: "",
     last_name: "",
     email: "",
     password: "",
   });
-  const [fistNamedDisabled, setFirstNameDisabled] = useState(false);
-  const [lastNameDisabled, setLastNameDisabled] = useState(false);
-  const [emailDisabled, setEmailDisabled] = useState(false);
 
-  
+  // Disabled fields state
+  const [disabledFields, setDisabledFields] = useState({
+    first_name: false,
+    last_name: false,
+    email: false,
+  });
+
+  // Initialize form state and disabled fields
   useEffect(() => {
     setOpenDialog(open);
 
-    // Initialize form state with userInfo values when userInfo changes
     if (userInfo) {
-      setFormState((prevState) => ({
-        ...prevState,
+      setFormState({
         first_name: userInfo.firstName || "",
         last_name: userInfo.lastName || "",
         email: userInfo.email || "",
-      }));
-      if (userInfo.first_name !== "") {
-        setFirstNameDisabled(true)
-      }
-      if (userInfo.last_name !== "") {
-        setLastNameDisabled(true)
-      }
-      if (userInfo.email !== "") {
-        setEmailDisabled(true)
-      }
+        password: "",
+      });
+
+      setDisabledFields({
+        first_name: Boolean(userInfo.firstName),
+        last_name: Boolean(userInfo.lastName),
+        email: Boolean(userInfo.email),
+      });
     }
   }, [open, userInfo]);
 
+  // Handle input changes
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFormState({ ...formState, [name]: value });
+    setFormState((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-        // Debugging the form state and user info
-        console.log("user:", { id: userInfo.id, password: formState.password });
+      const response = await fetch("/password-set", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: userInfo.id,
+          password: formState.password,
+        }),
+      });
 
-        // Make the POST request
-        const res = await fetch("/password-set", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json", // Indicates JSON data
-            },
-            body: JSON.stringify({
-                id: userInfo.id, // Correctly pass the ID
-                password: formState.password, // Correctly pass the password
-            }), // Properly stringify the data
-        });
+      if (!response.ok) {
+        const errorMessage = `Error: ${response.status} ${response.statusText}`;
+        throw new Error(errorMessage);
+      }
 
-        // Check for response status
-        if (!res.ok) {
-            const errorMessage = `Failed to set password: ${res.status} ${res.statusText}`;
-            throw new Error(errorMessage);
-        }
-
-        // Parse the JSON response
-        const data = await res.json();
-        console.log("response:", data); // Debugging the response
-
-        // You can add further actions here (e.g., updating state, showing a success message, etc.)
+      const data = await response.json();
+      console.log("Response:", data);
+      handleCloseDialog(false);
     } catch (error) {
-        console.error("Error during password set:", error);
-    } finally {
-        // Always close the dialog, whether the request succeeds or fails
-        handleCloseDialog(false);
+      console.error("Error during form submission:", error);
     }
-};
+  };
 
-
+  // Close dialog
   const handleCloseDialog = (isOpen) => {
     setOpenDialog(isOpen);
     onClose(isOpen);
@@ -101,7 +95,7 @@ export const RegisterDialog = ({open, userInfo, onClose}) => {
       PaperProps={{
         sx: {
           borderRadius: "10px",
-          padding: "0px",
+          padding: 0,
           width: "400px",
           maxWidth: "90%",
           overflow: "hidden",
@@ -110,36 +104,33 @@ export const RegisterDialog = ({open, userInfo, onClose}) => {
         onSubmit: handleSubmit,
       }}
     >
-      {/* Gray Box Header */}
+      {/* Dialog Header */}
       <Box
         sx={{
           bgcolor: "#d3d3d3",
-          color: "black",
           textAlign: "center",
           padding: 3,
-          fontSize: 20,
-          fontWeight: "bold",
         }}
       >
-        Welcome!
+        <Typography variant="h6" sx={{ fontWeight: "bold", color: "#333" }}>
+          Welcome!
+        </Typography>
         <Typography
           variant="body2"
           sx={{
             marginTop: 1,
-            color: "black",
-            fontSize: "14px",
+            color: "#666",
           }}
         >
           Glad to have you here. Please fill out the details below.
         </Typography>
       </Box>
 
-      {/* Form Content */}
+      {/* Dialog Content */}
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
           gap: 2,
           padding: 3,
         }}
@@ -152,7 +143,7 @@ export const RegisterDialog = ({open, userInfo, onClose}) => {
           value={formState.first_name}
           onChange={handleInputChange}
           required
-          disabled={fistNamedDisabled}
+          disabled={disabledFields.first_name}
         />
         <TextField
           fullWidth
@@ -162,7 +153,7 @@ export const RegisterDialog = ({open, userInfo, onClose}) => {
           value={formState.last_name}
           onChange={handleInputChange}
           required
-          disabled={lastNameDisabled}
+          disabled={disabledFields.last_name}
         />
         <TextField
           fullWidth
@@ -173,7 +164,7 @@ export const RegisterDialog = ({open, userInfo, onClose}) => {
           value={formState.email}
           onChange={handleInputChange}
           required
-          disabled={emailDisabled}
+          disabled={disabledFields.email}
         />
         <TextField
           fullWidth
@@ -186,7 +177,14 @@ export const RegisterDialog = ({open, userInfo, onClose}) => {
           required
         />
 
-        <DialogActions sx={{ justifyContent: "center", width: "100%", mt: 2 }}>
+        {/* Dialog Actions */}
+        <DialogActions
+          sx={{
+            justifyContent: "center",
+            marginTop: 2,
+            gap: 2,
+          }}
+        >
           <Button
             onClick={() => handleCloseDialog(false)}
             color="secondary"
@@ -194,12 +192,7 @@ export const RegisterDialog = ({open, userInfo, onClose}) => {
             sx={{
               borderRadius: "8px",
               padding: "10px 20px",
-              fontSize: "16px",
-              borderColor: "#4a4a4a",
-              color: "#4a4a4a",
-              "&:hover": {
-                borderColor: "#333",
-              },
+              fontSize: "14px",
             }}
           >
             Cancel
@@ -212,8 +205,7 @@ export const RegisterDialog = ({open, userInfo, onClose}) => {
               backgroundColor: "#4a4a4a",
               borderRadius: "8px",
               padding: "10px 20px",
-              fontSize: "16px",
-              color: "white",
+              fontSize: "14px",
               "&:hover": {
                 backgroundColor: "#333",
               },
