@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Box, Button, Dialog, TextField, Typography } from "@mui/material";
 
 export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
-
   // Form state
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
     email: "",
-    password: ""
+    password: "",
   });
 
   // Error state
@@ -16,13 +15,13 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
     first_name: "",
     last_name: "",
     email: "",
-    password: ""
+    password: "",
   });
 
   // Handle input changes
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: "" })); // Clear error on input
+    setErrors((prev) => ({ ...prev, [field]: "" })); // Clear specific field error
   };
 
   // Validate inputs
@@ -32,86 +31,68 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
       first_name: formData.first_name ? "" : "First name is required.",
       last_name: formData.last_name ? "" : "Last name is required.",
       email: emailRegex.test(formData.email) ? "" : "Invalid email address.",
-      password:
-        formData.password.length >= 6
-          ? ""
-          : "Password must be at least 6 characters.",
+      password: formData.password.length >= 6
+        ? ""
+        : "Password must be at least 6 characters.",
     };
+
     setErrors(newErrors);
-    return Object.values(newErrors).every((error) => error === "");
+    return Object.values(newErrors).every((error) => !error);
+  };
+
+  // Handle server error feedback
+  const handleServerErrors = (serverErrors) => {
+    if (serverErrors) {
+      const updatedErrors = Object.keys(serverErrors).reduce((acc, field) => {
+        acc[field] = serverErrors[field]?.[0] || ""; // Extract first error message
+        return acc;
+      }, {});
+
+      setErrors((prev) => ({ ...prev, ...updatedErrors }));
+    }
   };
 
   // Handle form submission
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-   console.log("Hello worlld")
-    
+
     if (!validateInputs()) return;
 
-    // Mock API call
-    fetch("/sign-up-user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-       
-        if (data.success) {
-          onRegister(); // Call parent callback
-          handleClose();
-        } else {
-            // check for server error fidback in case a bad request is made
-            let last_name_error = "" 
-            let first_name_error = "" 
-            let email_error = "" 
-            let password_error = "" 
-            if (data.Errors !== undefined) {
-             if (data.Errors.email != undefined) {
-                email_error = data.Errors.email[0]
-             }
-             if (data.Errors.first_name != undefined) {
-                first_name_error = data.Errors.first_name[0]
-             }
-             if (data.Errors.last_name != undefined) {
-                last_name_error = data.Errors.last_name[0]
-             }
-             if (data.Errors.password != undefined) {
-                password_error = data.Errors.password[0]
-             }
-             setErrors((prev) => ({
-                ...prev,
-                ...{
-                    first_name: first_name_error,
-                    last_name: last_name_error,
-                    email: email_error,
-                    password: password_error
-                },
-              }));
-            }
-        }
-      })
-      .catch((err) => {
-        console.error("Error during registration:", err);
+    try {
+      const response = await fetch("/sign-up-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
-      
+
+      const data = await response.json();
+
+      if (data.success) {
+        onRegister(); // Notify parent component
+        handleClose();
+      } else {
+        handleServerErrors(data.Errors); // Handle server-side validation errors
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+    }
   };
 
-  // Close dialog
+  // Close dialog and reset states
   const handleClose = () => {
     setFormData({
       first_name: "",
       last_name: "",
       email: "",
-      password: ""
+      password: "",
     });
     setErrors({
       first_name: "",
       last_name: "",
       email: "",
-      password: ""
+      password: "",
     });
     onClose(false);
   };
@@ -151,7 +132,6 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
           onChange={(e) => handleChange("first_name", e.target.value)}
           error={!!errors.first_name}
           helperText={errors.first_name}
-      
         />
         <TextField
           fullWidth
@@ -161,7 +141,6 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
           onChange={(e) => handleChange("last_name", e.target.value)}
           error={!!errors.last_name}
           helperText={errors.last_name}
-         
         />
         <TextField
           fullWidth
@@ -172,7 +151,6 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
           onChange={(e) => handleChange("email", e.target.value)}
           error={!!errors.email}
           helperText={errors.email}
-   
         />
         <TextField
           fullWidth
@@ -183,9 +161,7 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
           onChange={(e) => handleChange("password", e.target.value)}
           error={!!errors.password}
           helperText={errors.password}
-       
         />
-     
 
         {/* Actions */}
         <Box display="flex" justifyContent="space-between" mt={3}>
