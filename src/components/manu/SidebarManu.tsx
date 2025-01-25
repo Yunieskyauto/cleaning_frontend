@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import "./SidebarMenu.scss";
 import { Link } from "react-router-dom";
+import { LoginDialog } from "../dialogs/LoginDialog.tsx";
 
 const SidebarMenu = ({ accessLevel = 1 }) => {
+   const [openRegisterDialog, setOpenRegisterDialog] = useState(false)
+    const [openLoginDialog, setOpenLoginDialog] = useState(false)
+  
+    const handleOpenRegister = () => {
+      setOpenRegisterDialog(true)
+      setOpenLoginDialog(false)
+    }
+
   return (
     <aside className="sidebar-menu">
       <div className="sidebar-header">
@@ -48,7 +57,7 @@ const SidebarMenu = ({ accessLevel = 1 }) => {
         <p className="sign-in-text">
           Sign in to unlock features and access more tools.
         </p>
-        <button className="sign-in-button">SIGN IN</button>
+        <button className="sign-in-button" onClick={() => setOpenLoginDialog(true)}>SIGN IN</button>
       </div>
 
       {/* Second Sidebar Section */}
@@ -83,6 +92,12 @@ const SidebarMenu = ({ accessLevel = 1 }) => {
           </li>
         </ul>
       </div>
+       <LoginDialog
+              open={openLoginDialog}
+              onClose={(openDialog) => {setOpenLoginDialog(openDialog)}}
+              onOpenRegister={() => {}}
+              onUser={(user) => { }}
+            />
     </aside>
   );
 };
