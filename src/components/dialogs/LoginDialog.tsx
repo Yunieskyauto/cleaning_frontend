@@ -201,7 +201,7 @@ export const LoginDialog = ({ open, onClose, onOpenRegister, onUser }) => {
               cursor: "pointer",
               fontWeight: "bold",
             }}
-            onClick={onOpenRegister}
+            onClick={() => onOpenRegister(true)}
           >
             Sign up for free
           </Typography>

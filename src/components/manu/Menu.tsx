@@ -3,12 +3,13 @@ import { Link } from "react-router-dom"
 import { IoIosHome } from "react-icons/io";
 import { FaUsers } from "react-icons/fa";
 import './menu.scss'
-import { RegsterUserDialog } from "../dialogs/RegisterUserDialog.tsx";
+
 import { LoginDialog } from "../dialogs/LoginDialog.tsx";
 import { AdminMenu } from "./AdminMenu.tsx";
 import { EmployeeMenu } from "./EmployeeMenu.tsx";
 import { UserMenu } from "./UserMenu.tsx";
 import { DefaultMenu } from "./DefaultMenu.tsx";
+import { RegisterUserDialog } from "../dialogs/RegisterUserDialog.tsx";
 
 export const Menu = (props) => {
   const [openRegisterDialog, setOpenRegisterDialog] = useState(false)
@@ -40,10 +41,7 @@ export const Menu = (props) => {
           </div>
         </div>
       </div>
-      <RegsterUserDialog
-        open={openRegisterDialog}
-        onClose={(isOpen) => setOpenRegisterDialog(isOpen)}
-      />
+      
       <LoginDialog
         open={openLoginDialog}
         onClose={(isOpen) => setOpenLoginDialog(isOpen)}

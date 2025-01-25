@@ -2,14 +2,21 @@ import React, { useState } from "react";
 import "./SidebarMenu.scss";
 import { Link } from "react-router-dom";
 import { LoginDialog } from "../dialogs/LoginDialog.tsx";
+import { RegisterDialog } from "../dialogs/RegisterDialog.tsx";
+import { RegisterUserDialog } from "../dialogs/RegisterUserDialog.tsx";
 
 const SidebarMenu = ({ accessLevel = 1 }) => {
    const [openRegisterDialog, setOpenRegisterDialog] = useState(false)
     const [openLoginDialog, setOpenLoginDialog] = useState(false)
   
-    const handleOpenRegister = () => {
-      setOpenRegisterDialog(true)
-      setOpenLoginDialog(false)
+    const handleOpenRegister = (openRegisteDialog) => {
+      setOpenRegisterDialog(openRegisteDialog)
+      setOpenLoginDialog(!openRegisteDialog)
+    }
+
+    const handleOpenLigin = (openLoginDialog) => {
+      setOpenLoginDialog(openLoginDialog)
+      setOpenRegisterDialog(!openLoginDialog)
     }
 
   return (
@@ -92,10 +99,16 @@ const SidebarMenu = ({ accessLevel = 1 }) => {
           </li>
         </ul>
       </div>
+       <RegisterUserDialog 
+       open={openRegisterDialog}
+       onClose={(closeRegisterDialog) => setOpenRegisterDialog(closeRegisterDialog)}
+       onRegister={{}}
+       onLogin={(openLoginDialog) => handleOpenLigin(openLoginDialog)}
+       />
        <LoginDialog
               open={openLoginDialog}
-              onClose={(openDialog) => {setOpenLoginDialog(openDialog)}}
-              onOpenRegister={() => {}}
+              onClose={(closeLoginDialog) => {setOpenLoginDialog(closeLoginDialog)}}
+              onOpenRegister={(openRegister) => handleOpenRegister(openRegister)}
               onUser={(user) => { }}
             />
     </aside>
