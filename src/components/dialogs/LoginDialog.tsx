@@ -66,6 +66,7 @@ export const LoginDialog = ({ open, onClose, onOpenRegister, onUser }) => {
             lastName: data.last_name,
             accessToken: data.token.access_token,
             accessLevel: data.access_level,
+            id: data.id
           });
           navigate("/dashboard");
         } else {
