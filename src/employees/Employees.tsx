@@ -107,6 +107,7 @@ export const Employees = () => {
   
   
   useEffect(() => {
+    /*
     // Early exit if the access token is not available
     if (!employee.accessToken) {
       navigate("/");
@@ -148,6 +149,7 @@ export const Employees = () => {
     };
   
     fetchEmployees();
+    */
   }, [updateList]);
   
 
