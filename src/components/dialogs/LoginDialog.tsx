@@ -5,7 +5,7 @@ import Dialog from "@mui/material/Dialog";
 import { Box, TextField, Typography } from "@mui/material";
 import "./../../styles/variables.scss";
 
-export const LoginDialog = ({ open, onClose, onOpenRegister, onUser }) => {
+export const LoginDialog = ({ open, onClose, onOpenRegister, onUserRole }) => {
   const navigate = useNavigate();
 
   // State for form inputs and errors
@@ -17,6 +17,8 @@ export const LoginDialog = ({ open, onClose, onOpenRegister, onUser }) => {
     email: "",
     password: "",
   });
+
+  const [userRoleData, setUserRoleData] = useState({"firstName": "", "lastName": "", "token": "", "id": 0, "accessLevel": 0})
 
   // Dialog open/close state
   const [openDialog, setOpenDialog] = useState(false);
@@ -53,25 +55,21 @@ export const LoginDialog = ({ open, onClose, onOpenRegister, onUser }) => {
       .then((response) => response.json())
       
       .then((data) => {
-        console.log(data)
-        
         if (data.Errors) {
           setErrors({
             email: data.Errors.email?.[0] || "",
             password: data.Errors.password?.[0] || "",
           });
-        } else if (data.access_token) {
-          onUser({
-            firstName: data.first_name,
-            lastName: data.last_name,
-            accessToken: data.token.access_token,
-            accessLevel: data.access_level,
-            id: data.id
-          });
-          navigate("/dashboard");
-        } else {
-          onUser(undefined);
-        }
+        } 
+        onUserRole(
+          {
+            firstName: data.first_name || "",
+            lastName: data.last_name || "",
+            token: data.token.access_token || "",
+            id: data.id || "",
+            accessLevel: data.access_level || "",
+          }
+        )
       } )
       .catch((err) => {
         console.error(err);
@@ -81,7 +79,8 @@ export const LoginDialog = ({ open, onClose, onOpenRegister, onUser }) => {
   // Handle dialog open/close
   useEffect(() => {
     setOpenDialog(open);
-  }, [open]);
+      
+  }, [open, userRoleData]);
 
   const handleCloseDialog = (isOpen) => {
    //setOpenDialog(isOpen);

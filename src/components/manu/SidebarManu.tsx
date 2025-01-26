@@ -109,7 +109,7 @@ const SidebarMenu = ({ accessLevel = 3, onUserRole}) => {
               open={openLoginDialog}
               onClose={(closeLoginDialog) => {setOpenLoginDialog(closeLoginDialog)}}
               onOpenRegister={(openRegister) => handleOpenRegister(openRegister)}
-              onUser={(userRole) => onUserRole(userRole)}
+              onUserRole={(userRole) => onUserRole(userRole)}
             />
     </aside>
   );
