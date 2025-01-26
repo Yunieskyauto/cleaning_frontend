@@ -17,6 +17,8 @@ import { useEffect, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SidebarMenu from "./components/manu/SidebarManu.tsx";
+import { User } from "./User/User.tsx";
+import { UserEmailVerification } from "./users/UserEmailVerification.tsx";
 
 function App() {
   const [employee, setEmployee] = useState({ "firstName": "", "lastName": "", "accessToken": "", "accessLevel": "" })
@@ -95,6 +97,14 @@ function App() {
         {
           path: "/invite",
           element: <Invited/>,
+        },
+        {
+          path: "/user-email-verification",
+          element: <UserEmailVerification />
+        },
+        {
+          path: "/user",
+          element: <User/>,
         },
       ]
     },
