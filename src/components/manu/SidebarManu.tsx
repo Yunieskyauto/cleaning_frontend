@@ -5,7 +5,7 @@ import { LoginDialog } from "../dialogs/LoginDialog.tsx";
 import { RegisterDialog } from "../dialogs/RegisterDialog.tsx";
 import { RegisterUserDialog } from "../dialogs/RegisterUserDialog.tsx";
 
-const SidebarMenu = ({ accessLevel = 1 }) => {
+const SidebarMenu = ({ accessLevel = 3, onUserRole}) => {
    const [openRegisterDialog, setOpenRegisterDialog] = useState(false)
     const [openLoginDialog, setOpenLoginDialog] = useState(false)
   
@@ -109,7 +109,7 @@ const SidebarMenu = ({ accessLevel = 1 }) => {
               open={openLoginDialog}
               onClose={(closeLoginDialog) => {setOpenLoginDialog(closeLoginDialog)}}
               onOpenRegister={(openRegister) => handleOpenRegister(openRegister)}
-              onUser={(user) => { }}
+              onUser={(userRole) => onUserRole(userRole)}
             />
     </aside>
   );
