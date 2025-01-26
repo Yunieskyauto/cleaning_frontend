@@ -28,17 +28,10 @@ export const UserEmailVerification = () => {
           throw new Error(errorData.message || "Email verification failed");
         }
 
-        const data = await res.json();
+        const data = await res.json();  // TODO add the response message to an alert and add the user to login
 
-        // Navigate to the user page with relevant user details
-        navigate("/user", {
-          state: {
-            firstName: data?.first_name || "",
-            lastName: data?.last_name || "",
-            email: data?.email || "",
-            id: data?.id || "",
-          },
-        });
+        // Navigate to the home page and ask the user to login
+        navigate("/");
       } catch (error) {
         console.error("Error during email verification:", error.message);
         // Navigate to home and optionally trigger a failed alert
