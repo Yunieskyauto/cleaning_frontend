@@ -8,10 +8,12 @@ import {
   Box,
   Typography,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export const RegisterDialog = ({ open, userInfo, onClose }) => {
   const [openDialog, setOpenDialog] = useState(false);
-
+   
+  const navigate = useNavigate();
   // Form state
   const [formState, setFormState] = useState({
     first_name: "",
@@ -75,6 +77,10 @@ export const RegisterDialog = ({ open, userInfo, onClose }) => {
       }
 
       const data = await response.json();
+      if (data.status === "ok") {
+        //TODO Alert with the response memssage
+        navigate("/");
+      }
       console.log("Response:", data);
       handleCloseDialog(false);
     } catch (error) {
