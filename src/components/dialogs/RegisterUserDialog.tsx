@@ -56,7 +56,7 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!validateInputs()) return;
+   if (!validateInputs()) return;
 
     try {
       const response = await fetch("/sign-up-user", {
@@ -68,9 +68,9 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
       });
 
       const data = await response.json();
-
-      if (data.success) {
-        onRegister(); // Notify parent component
+      
+      if (!data.Errors) {
+        console.log(data)
         handleClose();
       } else {
         handleServerErrors(data.Errors); // Handle server-side validation errors
