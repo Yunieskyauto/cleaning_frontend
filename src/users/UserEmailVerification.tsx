@@ -9,7 +9,7 @@ export const UserEmailVerification = () => {
   useEffect(() => {
     const handleEmailVerification = async () => {
       if (!emailVerificationToken) {
-        console.error("No email verification token found.");
+        console.error("email verification token found or consumed.");
         navigate("/"); // Redirect to a safe page if no token is found
         return;
       }
