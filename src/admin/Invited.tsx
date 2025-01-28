@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams,  useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { RegisterDialog } from '../components/dialogs/RegisterDialog.tsx';
 
 export const Invited = () => {
+    const navigate = useNavigate();
 
-    const navigate = useNavigate()
+    // Extract query parameters using React Router's hook
+    const [searchParams] = useSearchParams();
+    const inviteToken = searchParams.get("token"); // Extract the 'token' parameter
 
-    const [searchParams] = useSearchParams(); // React hook to access query parameters
-    const inviteToken = searchParams.get("token"); // Extract the value of 'token'
-    const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false); // Manage dialog visibility
     const [userInfo, setUserInfo] = useState({
         firstName: "",
         lastName: "",
@@ -16,49 +17,54 @@ export const Invited = () => {
         id: ""
     });
 
-    useEffect(() => {
-        const handleSubmit = async () => {
-            try {
-                console.log("Invite token:", inviteToken); // Debugging the token
-                const res = await fetch("/invite", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json", // Indicates JSON data
-                    },
-                    body: JSON.stringify({ token: inviteToken }), // Properly stringify the data
-                });
+    // Function to fetch invite data
+    const fetchInviteData = async (token: string) => {
+        try {
+            console.log("Processing invite token:", token); // Debug log for the token
 
-                if (!res.ok) {
-                    throw new Error("Failed to fetch invite data");
-                }
+            const res = await fetch("/invite", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json", // Declare JSON content
+                },
+                body: JSON.stringify({ token }), // Send token in the request body
+            });
 
-                const data = await res.json(); // Wait for the response and parse it as JSON
-                setUserInfo({
-                    firstName: data.first_name || "",
-                    lastName: data.last_name || "",
-                    email: data.email || "",
-                    id: data.id || ""
-                });
-            
-            } catch (error) {
-                console.error("Error:", error);
-                navigate("/")  //TODO add failed alert
+            if (!res.ok) {
+                throw new Error(`Failed to fetch invite data: ${res.statusText}`);
             }
-        };
 
-        if (inviteToken) {
-            handleSubmit(); // Only call if token is available
+            const data = await res.json(); // Parse response JSON
+            setUserInfo({
+                firstName: data.first_name || "",
+                lastName: data.last_name || "",
+                email: data.email || "",
+                id: data.id || "",
+            });
+            setDialogOpen(true); // Open dialog after successful fetch
+        } catch (error) {
+            console.error("Error fetching invite data:", error);
+            alert("Failed to process the invitation. Redirecting to the homepage.");
+            navigate("/"); // Redirect to the homepage on error
         }
-        setDialogOpen(true); // Ensure the dialog opens when the token is processed
-    }, [inviteToken]); // Re-run effect if inviteToken changes
+    };
+
+    useEffect(() => {
+        if (inviteToken) {
+            fetchInviteData(inviteToken); // Fetch data only if token exists
+        } else {
+            alert("No invite token found. Redirecting to the homepage.");
+            navigate("/"); // Redirect if no token is present
+        }
+    }, [inviteToken, navigate]); // Dependencies include `inviteToken` and `navigate`
 
     return (
         <div>
-            {/* Pass the userInfo as a prop to RegisterDialog */}
+            {/* Pass the user information and dialog controls to RegisterDialog */}
             <RegisterDialog
                 open={dialogOpen}
-                userInfo={userInfo} // Passing user info here
-                onClose={() => setDialogOpen(false)} // Handle dialog close
+                userInfo={userInfo}
+                onClose={() => setDialogOpen(false)} // Close dialog handler
             />
         </div>
     );
