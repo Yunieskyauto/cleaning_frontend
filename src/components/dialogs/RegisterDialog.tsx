@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 
 export const RegisterDialog = ({ open, userInfo, onClose }) => {
   const [openDialog, setOpenDialog] = useState(false);
+
+  const [passwordStateMessage, setPasswordStateMessage] = useState({"type": "", "message": ""})
    
   const navigate = useNavigate();
   // Form state
@@ -47,7 +49,11 @@ export const RegisterDialog = ({ open, userInfo, onClose }) => {
         email: Boolean(userInfo.email),
       });
     }
-  }, [open, userInfo]);
+
+    if (passwordStateMessage.type !== "") {
+      navigate(`/?messageType=${passwordStateMessage.type}&message=${passwordStateMessage.message}` ); // Redirect if no token is present
+    }
+  }, [open, userInfo, passwordStateMessage]);
 
   // Handle input changes
   const handleInputChange = (event) => {
@@ -71,17 +77,16 @@ export const RegisterDialog = ({ open, userInfo, onClose }) => {
         }),
       });
 
-      if (!response.ok) {
-        const errorMessage = `Error: ${response.status} ${response.statusText}`;
-        throw new Error(errorMessage);
+      const data = await response.json();
+      console.log("PassData", data)
+      if (data.status === "ok") {
+        setPasswordStateMessage({type: "success", message: data.message})
       }
 
-      const data = await response.json();
-      if (data.status === "ok") {
-        //TODO Alert with the response memssage
-        navigate("/");
+      if (data.error) {
+        setPasswordStateMessage({type: "error", message: data.memssage})
       }
-      console.log("Response:", data);
+
       handleCloseDialog(false);
     } catch (error) {
       console.error("Error during form submission:", error);
