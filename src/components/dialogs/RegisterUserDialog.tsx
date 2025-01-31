@@ -3,29 +3,33 @@ import { Box, Button, Dialog, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin, onError }) => {
-
-  
   const navigate = useNavigate();
-  // Form state
-  const [formData, setFormData] = useState({
+
+  // Default states
+  const defaultFormState = {
     first_name: "",
     last_name: "",
     email: "",
     password: "",
-  });
+  };
+
+  const defaultErrorState = {
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+  };
+
+  // Form state
+  const [formData, setFormData] = useState(defaultFormState);
 
   // Error state
-  const [errors, setErrors] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    password: "",
-  });
+  const [errors, setErrors] = useState(defaultErrorState);
 
   // Handle input changes
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: "" })); // Clear specific field error
+    setErrors((prev) => ({ ...prev, [field]: "" })); // Clear error for the field
   };
 
   // Validate inputs
@@ -44,6 +48,12 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin, onError
     return Object.values(newErrors).every((error) => !error);
   };
 
+  // Reset form and error states
+  const resetStates = () => {
+    setFormData(defaultFormState);
+    setErrors(defaultErrorState);
+  };
+
   // Handle server error feedback
   const handleServerErrors = (serverErrors) => {
     if (serverErrors) {
@@ -60,54 +70,47 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin, onError
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-   if (!validateInputs()) return;
+    if (!validateInputs()) return;
 
     try {
       const response = await fetch("/sign-up-user", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
-
-
       if (response.ok) {
         const data = await response.json();
-        console.log("Data", data)
+        onRegister(data);
+        resetStates();
+        navigate("/dashboard"); // Redirect after success
       } else {
-         if (response.status === 409) {
-          const data = await response.json();
-           onError("The email address you provided is already in use. Please use a different email or try resetting your password if you forgot your credentials.")
-           handleChange("email", "")
-           setFormData((data) => ({ ...data, ["password"]: ""}))
-         } 
+        const data = await response.json();
+        if (response.status === 409) {
+          onError("The email address is already in use. Please try a different one.");
+          handleChange("email", "");
+          setFormData((prev) => ({ ...prev, password: "" }));
+        } else {
+          handleServerErrors(data.errors || {});
+        }
       }
     } catch (error) {
-      onError("We encountered an error during registration. Please check the information you provided and try again. If the issue persists, contact support.")
+      onError("An error occurred during registration. Please try again later.");
       console.error("Error during registration:", error);
     }
   };
 
   // Close dialog and reset states
   const handleClose = () => {
-    setFormData({
-      first_name: "",
-      last_name: "",
-      email: "",
-      password: "",
-    });
-    setErrors({
-      first_name: "",
-      last_name: "",
-      email: "",
-      password: "",
-    });
+    resetStates();
     onClose(false);
   };
 
-
+  // Reusable button styles
+  const buttonStyles = {
+    borderRadius: 2,
+    textTransform: "none",
+  };
 
   return (
     <Dialog
@@ -144,6 +147,7 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin, onError
           onChange={(e) => handleChange("first_name", e.target.value)}
           error={!!errors.first_name}
           helperText={errors.first_name}
+          aria-label="First Name"
         />
         <TextField
           fullWidth
@@ -153,6 +157,7 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin, onError
           onChange={(e) => handleChange("last_name", e.target.value)}
           error={!!errors.last_name}
           helperText={errors.last_name}
+          aria-label="Last Name"
         />
         <TextField
           fullWidth
@@ -163,6 +168,7 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin, onError
           onChange={(e) => handleChange("email", e.target.value)}
           error={!!errors.email}
           helperText={errors.email}
+          aria-label="Email Address"
         />
         <TextField
           fullWidth
@@ -173,6 +179,7 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin, onError
           onChange={(e) => handleChange("password", e.target.value)}
           error={!!errors.password}
           helperText={errors.password}
+          aria-label="Password"
         />
 
         {/* Actions */}
@@ -181,12 +188,12 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin, onError
             onClick={handleClose}
             variant="outlined"
             sx={{
-              borderRadius: 2,
-              textTransform: "none",
+              ...buttonStyles,
               color: "#37474f",
               borderColor: "#37474f",
               "&:hover": { borderColor: "#263238", backgroundColor: "#f5f5f5" },
             }}
+            aria-label="Cancel"
           >
             Cancel
           </Button>
@@ -194,11 +201,11 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin, onError
             type="submit"
             variant="contained"
             sx={{
-              borderRadius: 2,
-              textTransform: "none",
+              ...buttonStyles,
               backgroundColor: "#37474f",
               "&:hover": { backgroundColor: "#263238" },
             }}
+            aria-label="Register"
           >
             Register
           </Button>
@@ -218,6 +225,7 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin, onError
                 textDecoration: "underline",
               }}
               onClick={() => onLogin(true)}
+              aria-label="Login"
             >
               Login
             </Typography>
