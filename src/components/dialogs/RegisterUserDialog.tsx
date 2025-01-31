@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { Box, Button, Dialog, TextField, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
+export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin, onError }) => {
+
+  
+  const navigate = useNavigate();
   // Form state
   const [formData, setFormData] = useState({
     first_name: "",
@@ -67,15 +71,21 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-      
-      if (!data.Errors) {
-        console.log(data)
-        handleClose();
+
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Data", data)
       } else {
-        handleServerErrors(data.Errors); // Handle server-side validation errors
+         if (response.status === 409) {
+          const data = await response.json();
+           onError("The email address you provided is already in use. Please use a different email or try resetting your password if you forgot your credentials.")
+           handleChange("email", "")
+           setFormData((data) => ({ ...data, ["password"]: ""}))
+         } 
       }
     } catch (error) {
+      onError("We encountered an error during registration. Please check the information you provided and try again. If the issue persists, contact support.")
       console.error("Error during registration:", error);
     }
   };
@@ -96,6 +106,8 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin }) => {
     });
     onClose(false);
   };
+
+
 
   return (
     <Dialog

@@ -4,11 +4,14 @@ import { Link } from "react-router-dom";
 import { LoginDialog } from "../dialogs/LoginDialog.tsx";
 import { RegisterDialog } from "../dialogs/RegisterDialog.tsx";
 import { RegisterUserDialog } from "../dialogs/RegisterUserDialog.tsx";
+import ErrorAlert from "../alert/ErrorAlert.tsx";
 
 const SidebarMenu = ({ accessLevel = 3, onUserRole}) => {
    const [openRegisterDialog, setOpenRegisterDialog] = useState(false)
-    const [openLoginDialog, setOpenLoginDialog] = useState(false)
-  
+   const [openLoginDialog, setOpenLoginDialog] = useState(false)
+   const [closeErrorAlert, setCloseErrorAlert] = useState(false)    
+   const [alertErrorMessage, setAlertErrorMessage] = useState("")
+
     const handleOpenRegister = (openRegisteDialog) => {
       setOpenRegisterDialog(openRegisteDialog)
       setOpenLoginDialog(!openRegisteDialog)
@@ -17,6 +20,19 @@ const SidebarMenu = ({ accessLevel = 3, onUserRole}) => {
     const handleOpenLigin = (openLoginDialog) => {
       setOpenLoginDialog(openLoginDialog)
       setOpenRegisterDialog(!openLoginDialog)
+    }
+
+    const handleCloseErrorAlert = () => {
+      setCloseErrorAlert(false)
+     setOpenRegisterDialog(true)
+    }
+
+    const handleErrorDialogMesssage = (message) => {
+      if (message !== "") {
+        setAlertErrorMessage(message)
+        setOpenRegisterDialog(false)
+        setCloseErrorAlert(true)
+      }
     }
 
   return (
@@ -104,6 +120,7 @@ const SidebarMenu = ({ accessLevel = 3, onUserRole}) => {
        onClose={(closeRegisterDialog) => setOpenRegisterDialog(closeRegisterDialog)}
        onRegister={{}}
        onLogin={(openLoginDialog) => handleOpenLigin(openLoginDialog)}
+       onError={(message) => handleErrorDialogMesssage(message)}
        />
        <LoginDialog
               open={openLoginDialog}
@@ -111,6 +128,8 @@ const SidebarMenu = ({ accessLevel = 3, onUserRole}) => {
               onOpenRegister={(openRegister) => handleOpenRegister(openRegister)}
               onUserRole={(userRole) => onUserRole(userRole)}
             />
+       {closeErrorAlert &&(<ErrorAlert  onClose={handleCloseErrorAlert} message={alertErrorMessage}/> )}     
+         
     </aside>
   );
 };
