@@ -6,34 +6,45 @@ import { RegisterDialog } from "../dialogs/RegisterDialog.tsx";
 import { RegisterUserDialog } from "../dialogs/RegisterUserDialog.tsx";
 import ErrorAlert from "../alert/ErrorAlert.tsx";
 
-const SidebarMenu = ({ accessLevel = 3, onUserRole}) => {
-   const [openRegisterDialog, setOpenRegisterDialog] = useState(false)
-   const [openLoginDialog, setOpenLoginDialog] = useState(false)
-   const [closeErrorAlert, setCloseErrorAlert] = useState(false)    
-   const [alertErrorMessage, setAlertErrorMessage] = useState("")
+const SidebarMenu = ({ accessLevel = 3, onUserRole }) => {
+  const [dialogState, setDialogState] = useState({
+    registerOpen: false,
+    loginOpen: false,
+  });
 
-    const handleOpenRegister = (openRegisteDialog) => {
-      setOpenRegisterDialog(openRegisteDialog)
-      setOpenLoginDialog(!openRegisteDialog)
-    }
+  const [errorState, setErrorState] = useState({
+    isErrorVisible: false,
+    message: "",
+  });
 
-    const handleOpenLigin = (openLoginDialog) => {
-      setOpenLoginDialog(openLoginDialog)
-      setOpenRegisterDialog(!openLoginDialog)
-    }
+  // Open register dialog and close login dialog
+  const openRegisterDialog = () => {
+    setDialogState({ registerOpen: true, loginOpen: false });
+  };
 
-    const handleCloseErrorAlert = () => {
-      setCloseErrorAlert(false)
-     setOpenRegisterDialog(true)
-    }
+  // Open login dialog and close register dialog
+  const openLoginDialog = () => {
+    setDialogState({ registerOpen: false, loginOpen: true });
+  };
 
-    const handleErrorDialogMesssage = (message) => {
-      if (message !== "") {
-        setAlertErrorMessage(message)
-        setOpenRegisterDialog(false)
-        setCloseErrorAlert(true)
-      }
+  // Close all dialogs
+  const closeDialogs = () => {
+    setDialogState({ registerOpen: false, loginOpen: false });
+  };
+
+  // Handle closing the error alert
+  const closeErrorAlert = () => {
+    setErrorState({ isErrorVisible: false, message: "" });
+    openRegisterDialog();
+  };
+
+  // Set error message and show the error alert
+  const showErrorAlert = (message) => {
+    if (message) {
+      setErrorState({ isErrorVisible: true, message });
+      closeDialogs();
     }
+  };
 
   return (
     <aside className="sidebar-menu">
@@ -42,7 +53,7 @@ const SidebarMenu = ({ accessLevel = 3, onUserRole}) => {
         <div className="version">v4.0</div>
       </div>
 
-      {/* First Sidebar Section */}
+      {/* General Section */}
       <div className="menu-section">
         <h4 className="section-title">GENERAL</h4>
         <ul className="menu-list">
@@ -80,10 +91,12 @@ const SidebarMenu = ({ accessLevel = 3, onUserRole}) => {
         <p className="sign-in-text">
           Sign in to unlock features and access more tools.
         </p>
-        <button className="sign-in-button" onClick={() => setOpenLoginDialog(true)}>SIGN IN</button>
+        <button className="sign-in-button" onClick={openLoginDialog}>
+          SIGN IN
+        </button>
       </div>
 
-      {/* Second Sidebar Section */}
+      {/* SISYPHUS VENTURES Section */}
       <div className="menu-section">
         <h4 className="section-title">SISYPHUS VENTURES</h4>
         <ul className="menu-list">
@@ -102,6 +115,7 @@ const SidebarMenu = ({ accessLevel = 3, onUserRole}) => {
         </ul>
       </div>
 
+      {/* Footer Section */}
       <div className="menu-footer">
         <ul className="menu-list">
           <li className="menu-item">
@@ -115,21 +129,29 @@ const SidebarMenu = ({ accessLevel = 3, onUserRole}) => {
           </li>
         </ul>
       </div>
-       <RegisterUserDialog 
-       open={openRegisterDialog}
-       onClose={(closeRegisterDialog) => setOpenRegisterDialog(closeRegisterDialog)}
-       onRegister={{}}
-       onLogin={(openLoginDialog) => handleOpenLigin(openLoginDialog)}
-       onError={(message) => handleErrorDialogMesssage(message)}
-       />
-       <LoginDialog
-              open={openLoginDialog}
-              onClose={(closeLoginDialog) => {setOpenLoginDialog(closeLoginDialog)}}
-              onOpenRegister={(openRegister) => handleOpenRegister(openRegister)}
-              onUserRole={(userRole) => onUserRole(userRole)}
-            />
-       {closeErrorAlert &&(<ErrorAlert  onClose={handleCloseErrorAlert} message={alertErrorMessage}/> )}     
-         
+
+      {/* Dialog Components */}
+      <RegisterUserDialog
+        open={dialogState.registerOpen}
+        onClose={closeDialogs}
+        onRegister={() => {}}
+        onLogin={openLoginDialog}
+        onError={showErrorAlert}
+      />
+      <LoginDialog
+        open={dialogState.loginOpen}
+        onClose={closeDialogs}
+        onOpenRegister={openRegisterDialog}
+        onUserRole={onUserRole}
+      />
+
+      {/* Error Alert */}
+      {errorState.isErrorVisible && (
+        <ErrorAlert
+          message={errorState.message}
+          onClose={closeErrorAlert}
+        />
+      )}
     </aside>
   );
 };
