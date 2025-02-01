@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Button, Dialog, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin, onError }) => {
+export const RegisterUserDialog = ({ open, onClose, onRegisterMessage, onLogin}) => {
   const navigate = useNavigate();
 
   // Default states
@@ -81,13 +81,14 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin, onError
 
       if (response.ok) {
         const data = await response.json();
-        onRegister(data);
         resetStates();
-        navigate("/dashboard"); // Redirect after success
+        onClose();
+        navigate(`/?userId=${data.id}`);
+        onRegisterMessage({"type": "success", "message": "Your account has been successfully registered. Please check your email inbox and click the validation link to activate your account"})
       } else {
         const data = await response.json();
         if (response.status === 409) {
-          onError("The email address is already in use. Please try a different one.");
+          onRegisterMessage({"type": "error", "message": "The email address is already in use. Please try a different one."})
           handleChange("email", "");
           setFormData((prev) => ({ ...prev, password: "" }));
         } else {
@@ -95,7 +96,7 @@ export const RegisterUserDialog = ({ open, onClose, onRegister, onLogin, onError
         }
       }
     } catch (error) {
-      onError("An error occurred during registration. Please try again later.");
+     // onError("An error occurred during registration. Please try again later.");
       console.error("Error during registration:", error);
     }
   };
