@@ -14,13 +14,45 @@ export const Home = () => {
   const messageType = searchParams.get('messageType'); // message parameter coming from [Invited] components
   const message = searchParams.get('message');
 
+  const userId = searchParams.get('userId');
+
   // Trigger toast and update welcome message on initial render
   useEffect(() => {
-    console.log("Message", messageType)
     // Display the toast once when the screen opens
     handleToast(messageType, message);
-// light
-// dark
+    console.log("UserId", userId)
+    if (!userId) {
+      return;
+    }
+
+
+    const handleAuthenticationWithId = async () => {
+      try {
+        const res = await fetch("/id-authenticate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id: parseInt(userId, 10) }),
+        });
+    
+
+    
+        // Parse JSON response
+        const data = await res.json();
+
+        console.log("Data", data)
+    
+        // Show success message
+        alert(`Success: ${data.message}`);
+    
+        console.log("Authenticated User:", data);
+      } catch (error) {
+        console.error("Error authenticating:", error.message);
+        alert(`Error: ${error.message}`);
+      }
+    };
+   
     // Determine welcome message based on access level
     if (userRole?.accessLevel === 2) {
       setWelcome("Hello Employee");
@@ -31,7 +63,8 @@ export const Home = () => {
     } else {
       setWelcome("Welcome Home");
     }
-  }, []); // Empty dependency array ensures the effect runs only once on component mount
+    handleAuthenticationWithId();
+  },[userId]); // Empty dependency array ensures the effect runs only once on component mount
 
   return (
     <div className="home">

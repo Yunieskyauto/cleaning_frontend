@@ -9,8 +9,7 @@ export const UserEmailVerification = () => {
   useEffect(() => {
     const handleEmailVerification = async () => {
       if (!emailVerificationToken) {
-        console.error("email verification token found or consumed.");
-        navigate("/"); // Redirect to a safe page if no token is found
+        navigate(`/?messageType=error&message=We couldn't locate the invitation token`); // Redirect to a safe page if no token is found
         return;
       }
 
@@ -22,16 +21,17 @@ export const UserEmailVerification = () => {
           },
           body: JSON.stringify({ token: emailVerificationToken }),
         });
-
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || "Email verification failed");
-        }
-
+         
         const data = await res.json();  // TODO add the response message to an alert and add the user to login
-
-        // Navigate to the home page and ask the user to login
-        navigate("/");
+        
+        console.log("UserData", data)
+        if (res.ok) {
+          navigate(`/?userId=${data.id}`)
+        } else {
+          navigate(`/?messageType=error&message=Invitation to invalid or consumed`)
+          console.log("Dataaaa", data)
+        }
+        
       } catch (error) {
         console.error("Error during email verification:", error.message);
         // Navigate to home and optionally trigger a failed alert

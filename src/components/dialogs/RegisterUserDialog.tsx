@@ -80,10 +80,7 @@ export const RegisterUserDialog = ({ open, onClose, onRegisterMessage, onLogin})
       });
 
       if (response.ok) {
-        const data = await response.json();
         resetStates();
-        onClose();
-        navigate(`/?userId=${data.id}`);
         onRegisterMessage({"type": "success", "message": "Your account has been successfully registered. Please check your email inbox and click the validation link to activate your account"})
       } else {
         const data = await response.json();
