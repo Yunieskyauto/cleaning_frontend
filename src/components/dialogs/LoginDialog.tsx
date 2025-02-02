@@ -67,6 +67,7 @@ export const LoginDialog = ({ open, onClose, onOpenRegister, onUserRole }) => {
         }
       )
       onClose();
+      setFormData({email: "", password: ""})
       } else {
         console.log("DataError", data)
         if (data.Errors) {
@@ -88,7 +89,7 @@ export const LoginDialog = ({ open, onClose, onOpenRegister, onUserRole }) => {
   }, [open, userRoleData]);
 
   const handleCloseDialog = (isOpen) => {
-   //setOpenDialog(isOpen);
+    setFormData({email: "", password: ""})
     onClose(isOpen);
   };
 
