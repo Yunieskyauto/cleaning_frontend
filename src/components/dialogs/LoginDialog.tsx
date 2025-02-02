@@ -70,6 +70,7 @@ export const LoginDialog = ({ open, onClose, onOpenRegister, onUserRole }) => {
             accessLevel: data.access_level || "",
           }
         )
+        onClose();
       } )
       .catch((err) => {
         console.error(err);
