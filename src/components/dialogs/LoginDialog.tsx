@@ -41,40 +41,44 @@ export const LoginDialog = ({ open, onClose, onOpenRegister, onUserRole }) => {
   };
 
   // Handle form submission
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateInputs()) return;
 
-    fetch(`/authenticate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      
-      .then((data) => {
+    try {
+      const response = await fetch(`/authenticate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+       console.log("DataSuccess", data)
+       onUserRole(
+        {
+          firstName: data.first_name || "",
+          lastName: data.last_name || "",
+          token: data.token.access_token || "",
+          id: data.id || "",
+          accessLevel: data.access_level || "",
+        }
+      )
+      onClose();
+      } else {
+        console.log("DataError", data)
         if (data.Errors) {
           setErrors({
             email: data.Errors.email?.[0] || "",
             password: data.Errors.password?.[0] || "",
           });
         } 
-        onUserRole(
-          {
-            firstName: data.first_name || "",
-            lastName: data.last_name || "",
-            token: data.token.access_token || "",
-            id: data.id || "",
-            accessLevel: data.access_level || "",
-          }
-        )
-        onClose();
-      } )
-      .catch((err) => {
-        console.error(err);
-      });
+      }
+    } catch (error) {
+      console.error("Error authenticating:", error.message);
+    }
   };
 
   // Handle dialog open/close
