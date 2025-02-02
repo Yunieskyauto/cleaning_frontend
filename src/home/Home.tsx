@@ -3,30 +3,36 @@ import { useLocation, useOutletContext, useSearchParams } from "react-router-dom
 import "./home.scss";
 import { toast, ToastContainer } from "react-toastify";
 
-export const Home = () => {
-  const { userRole } = useOutletContext(); // Access context
-  const [welcome, setWelcome] = useState("Home"); // Default state
+// Toast message types as constants
+const TOAST_TYPES = {
+  SUCCESS: "success",
+  ERROR: "error",
+};
 
-  const location = useLocation()
+export const Home = () => {
+  const { userRole } = useOutletContext(); // Access user role from context
+  const location = useLocation();
   const invitationMessage = location.state || {};
 
   const [searchParams] = useSearchParams();
-  const messageType = searchParams.get('messageType'); // message parameter coming from [Invited] components
-  const message = searchParams.get('message');
+  const messageType = searchParams.get("messageType") || ""; // Get messageType from URL params
+  const message = searchParams.get("message") || "";
+  const userId = searchParams.get("userId");
 
-  const userId = searchParams.get('userId');
+  const [welcome, setWelcome] = useState("Home"); // Default welcome message
 
-  // Trigger toast and update welcome message on initial render
+  // Effect to show toast on mount if message is present
   useEffect(() => {
-    // Display the toast once when the screen opens
-    handleToast(messageType, message);
-    console.log("UserId", userId)
-    if (!userId) {
-      return;
+    if (message && messageType) {
+      handleToast(messageType, message);
     }
+  }, [message, messageType]);
 
+  // Effect to handle authentication when userId exists
+  useEffect(() => {
+    if (!userId) return;
 
-    const handleAuthenticationWithId = async () => {
+    const authenticateWithId = async () => {
       try {
         const res = await fetch("/id-authenticate", {
           method: "POST",
@@ -35,36 +41,41 @@ export const Home = () => {
           },
           body: JSON.stringify({ id: parseInt(userId, 10) }),
         });
-    
 
-    
-        // Parse JSON response
         const data = await res.json();
 
-        console.log("Data", data)
-    
-        // Show success message
-        alert(`Success: ${data.message}`);
-    
-        console.log("Authenticated User:", data);
+        if (res.ok) {
+          console.log("Authenticated User:", data);
+          const successMessage = "Your email has been successfully verified. You can now access all features of your account."
+          handleToast(TOAST_TYPES.SUCCESS, successMessage);
+        } else {
+          throw new Error(data.message || "Authentication failed");
+        }
       } catch (error) {
         console.error("Error authenticating:", error.message);
         alert(`Error: ${error.message}`);
       }
     };
-   
-    // Determine welcome message based on access level
-    if (userRole?.accessLevel === 2) {
-      setWelcome("Hello Employee");
-    } else if (userRole?.accessLevel === 1) {
-      setWelcome("Hello Admin");
-    } else if (userRole?.accessLevel === 3) {
-      setWelcome("Hello Client");
-    } else {
-      setWelcome("Welcome Home");
+
+    authenticateWithId();
+  }, [userId]);
+
+  // Effect to set the welcome message based on user role
+  useEffect(() => {
+    switch (userRole?.accessLevel) {
+      case 1:
+        setWelcome("Hello Admin");
+        break;
+      case 2:
+        setWelcome("Hello Employee");
+        break;
+      case 3:
+        setWelcome("Hello Client");
+        break;
+      default:
+        setWelcome("Welcome Home");
     }
-    handleAuthenticationWithId();
-  },[userId]); // Empty dependency array ensures the effect runs only once on component mount
+  }, [userRole]);
 
   return (
     <div className="home">
@@ -74,26 +85,21 @@ export const Home = () => {
   );
 };
 
-
+// Toast notification handler
 const handleToast = (msgType, msg) => {
-  if (msgType === "error" && msgType !== undefined) {  //TODO improve this implementation later (use constants)
-    toast.error(msg, {
-      position: "top-center",
-      autoClose: 1000,
-      hideProgressBar: true,
-      closeOnClick: false,
-      theme: "light",
-    });
-  }
+  if (!msgType || !msg) return; // Prevent calling toast with empty values
 
-  if (msgType === "success") {
-    toast.success(msg, {
-      position: "top-center",
-      autoClose: 1000,
-      hideProgressBar: true,
-      closeOnClick: false,
-      theme: "light",
-    });
+  const toastOptions = {
+    position: "top-center",
+    autoClose: 1000,
+    hideProgressBar: true,
+    closeOnClick: false,
+    theme: "light",
+  };
+
+  if (msgType === TOAST_TYPES.ERROR) {
+    toast.error(msg, toastOptions);
+  } else if (msgType === TOAST_TYPES.SUCCESS) {
+    toast.success(msg, toastOptions);
   }
-  
-}
+};
