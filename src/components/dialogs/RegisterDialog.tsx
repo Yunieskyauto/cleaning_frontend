@@ -78,12 +78,9 @@ export const RegisterDialog = ({ open, userInfo, onClose }) => {
       });
 
       const data = await response.json();
-      console.log("PassData", data)
-      if (data.status === "ok") {
-        setPasswordStateMessage({type: "success", message: data.message})
-      }
-
-      if (data.error) {
+      if (response.ok) {
+        navigate(`/?alertType=success&message=Your password has been successfully set. Please log in to access the Cleaners feature` ); // Redirect if no token is present
+      } else {
         setPasswordStateMessage({type: "error", message: data.memssage})
       }
 

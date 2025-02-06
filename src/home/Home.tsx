@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useOutletContext, useSearchParams } from "react-router-dom";
 import "./home.scss";
 import { toast, ToastContainer } from "react-toastify";
-
+import AlertBox from "../components/alert/AlertBox.tsx";
+import { useNavigate } from "react-router-dom";
 // Toast message types as constants
 const TOAST_TYPES = {
   SUCCESS: "success",
@@ -10,6 +11,7 @@ const TOAST_TYPES = {
 };
 
 export const Home = () => {
+    const navigate = useNavigate();
   const { userRole } = useOutletContext(); // Access user role from context
   const location = useLocation();
   const invitationMessage = location.state || {};
@@ -19,14 +21,29 @@ export const Home = () => {
   const message = searchParams.get("message") || "";
   const userId = searchParams.get("userId");
 
+  const alertType = searchParams.get("alertType");
+
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState({"type": "", "message": ""})
+
   const [welcome, setWelcome] = useState("Home"); // Default welcome message
+
+  const handleCloseAlert = () => {
+    setOpenAlert(false);
+    navigate("/");
+  }
 
   // Effect to show toast on mount if message is present
   useEffect(() => {
     if (message && messageType) {
       handleToast(messageType, message);
     }
-  }, [message, messageType]);
+    if (alertType && message) {
+      setOpenAlert(true)
+      setAlertMessage({type: alertType, message: message})
+      console.log("Alert Message", message)
+    }
+  }, [message, messageType, alertType]);
 
   // Effect to handle authentication when userId exists
   useEffect(() => {
@@ -81,6 +98,15 @@ export const Home = () => {
     <div className="home">
       <h1>{welcome}</h1>
       <ToastContainer style={{ width: "100%" }} />
+      {openAlert && 
+       (
+        <AlertBox
+        type={alertMessage.type}
+        message={alertMessage.message}
+        onClose={handleCloseAlert} 
+        />
+       )
+      }
     </div>
   );
 };
