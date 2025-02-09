@@ -11,14 +11,11 @@ import { RiBarChartGroupedLine } from "react-icons/ri";
 import { PiUsersFour } from "react-icons/pi";
 import { GoCodeReview } from "react-icons/go";
 import { TbBrandBooking } from "react-icons/tb";
-const SidebarMenu = ({ accessLevel = 4, onUserRole }) => {
+const SidebarMenu = ({ accessLevel = 0, onUserRole }) => {
   const [dialogState, setDialogState] = useState({
     registerOpen: false,
     loginOpen: false,
   });
-
-  const [signein, setSignedin] = useState(false);
-
 
   const [alertState, setAlertState] = useState({
     isAlertVisible: false,
@@ -26,7 +23,7 @@ const SidebarMenu = ({ accessLevel = 4, onUserRole }) => {
     type: ""
   });
 
-  const [userRole, setUserRole] = useState({ "firstName": "", "lastName": "", "accessToken": "", "accessLevel": "", id: 0})
+  const [userRole, setUserRole] = useState({ "firstName": "", "lastName": "", "accessToken": "", "accessLevel": "", "id": 0})
 
   // Opens the register dialog and closes the login dialog.
   const openRegisterDialog = () => {
@@ -75,18 +72,7 @@ const SidebarMenu = ({ accessLevel = 4, onUserRole }) => {
     }
   }, [alertState]);
   
-  useEffect(() => {
-    const handleUserRule = (user) => {
-      if (user.id !== 0) {
-        onUserRole(user);
-     
-        setSignedin(true);
-        console.log("MyRule", user);
-      }
-    } 
-    handleUserRule(userRole);
-  }, [userRole])
-
+  
   return (
     <aside className="sidebar-menu">
       <div className="sidebar-header">
@@ -175,7 +161,7 @@ const SidebarMenu = ({ accessLevel = 4, onUserRole }) => {
           )}
         </ul>
       </div>
-        {!signein && (
+        {userRole.id === 0 && (
           <>
            {/* SIGN-IN SECTION */}
              <div className="sign-in-section">
