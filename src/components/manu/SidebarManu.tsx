@@ -91,7 +91,7 @@ const SidebarMenu = ({ accessLevel = 0, onUserRole }) => {
               </span> Home
             </Link>
           </li>
-          {accessLevel === 1 && (
+          {userRole.accessLevel === 1 && (
             <>
               <li className="menu-item">
                 <Link to="/" className="link">
@@ -116,7 +116,7 @@ const SidebarMenu = ({ accessLevel = 0, onUserRole }) => {
               </li>
             </>
           )}
-          {accessLevel === 2 && (
+          {userRole.accessLevel === 2 && (
              <>
              <li className="menu-item">
                <Link to="/" className="link">
@@ -141,7 +141,7 @@ const SidebarMenu = ({ accessLevel = 0, onUserRole }) => {
              </li>
            </>
           )}
-           {accessLevel === 3 && (
+           {userRole.accessLevel === 3 && (
              <>
              <li className="menu-item">
                <Link to="/" className="link">
