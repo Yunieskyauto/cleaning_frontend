@@ -4,18 +4,29 @@ import { Link } from "react-router-dom";
 import { LoginDialog } from "../dialogs/LoginDialog.tsx";
 import { RegisterUserDialog } from "../dialogs/RegisterUserDialog.tsx";
 import AlertBox from "../alert/AlertBox.tsx";
-
-const SidebarMenu = ({ accessLevel = 3, onUserRole }) => {
+import { IoHomeOutline } from "react-icons/io5";
+import { MdOutlineCleanHands } from "react-icons/md";
+import { LiaUsersCogSolid } from "react-icons/lia";
+import { RiBarChartGroupedLine } from "react-icons/ri";
+import { PiUsersFour } from "react-icons/pi";
+import { GoCodeReview } from "react-icons/go";
+import { TbBrandBooking } from "react-icons/tb";
+const SidebarMenu = ({ accessLevel = 4, onUserRole }) => {
   const [dialogState, setDialogState] = useState({
     registerOpen: false,
     loginOpen: false,
   });
+
+  const [signein, setSignedin] = useState(false);
+
 
   const [alertState, setAlertState] = useState({
     isAlertVisible: false,
     message: "",
     type: ""
   });
+
+  const [userRole, setUserRole] = useState({ "firstName": "", "lastName": "", "accessToken": "", "accessLevel": "", id: 0})
 
   // Opens the register dialog and closes the login dialog.
   const openRegisterDialog = () => {
@@ -45,6 +56,7 @@ const SidebarMenu = ({ accessLevel = 3, onUserRole }) => {
     }
   };
 
+ 
   // Sets the error message and displays the alert.
   const showAlert = (alert) => {
     if (alert.type !== "") {
@@ -62,6 +74,18 @@ const SidebarMenu = ({ accessLevel = 3, onUserRole }) => {
       openAlert();
     }
   }, [alertState]);
+  
+  useEffect(() => {
+    const handleUserRule = (user) => {
+      if (user.id !== 0) {
+        onUserRole(user);
+     
+        setSignedin(true);
+        console.log("MyRule", user);
+      }
+    } 
+    handleUserRule(userRole);
+  }, [userRole])
 
   return (
     <aside className="sidebar-menu">
@@ -76,42 +100,95 @@ const SidebarMenu = ({ accessLevel = 3, onUserRole }) => {
         <ul className="menu-list">
           <li className="menu-item">
             <Link to="/" className="link">
-              <span className="icon">🏠</span> Home
+              <span className="icon">
+                <IoHomeOutline/>
+              </span> Home
             </Link>
           </li>
           {accessLevel === 1 && (
             <>
               <li className="menu-item">
                 <Link to="/" className="link">
-                  <span className="icon">👤</span> Cleaners Management
+                  <span className="icon">
+                  <MdOutlineCleanHands />   
+                  </span> Cleaners Management
                 </Link>
               </li>
               <li className="menu-item">
                 <Link to="/" className="link">
-                  <span className="icon">👤</span> Users Management
+                  <span className="icon">
+                  <LiaUsersCogSolid />
+                  </span> Users Management
+                </Link>
+              </li>
+              <li className="menu-item">
+                <Link to="/" className="link">
+                  <span className="icon">
+                  <RiBarChartGroupedLine />
+                  </span> Metrics
                 </Link>
               </li>
             </>
           )}
-          {accessLevel === 3 && (
-            <li className="menu-item">
-              <Link to="/" className="link">
-                <span className="icon">👤</span> Cleaners
-              </Link>
-            </li>
+          {accessLevel === 2 && (
+             <>
+             <li className="menu-item">
+               <Link to="/" className="link">
+                 <span className="icon">
+                 <PiUsersFour />   
+                 </span> Clients
+               </Link>
+             </li>
+             <li className="menu-item">
+               <Link to="/" className="link">
+                 <span className="icon">
+                 <GoCodeReview />
+                 </span> Reviews
+               </Link>
+             </li>
+             <li className="menu-item">
+               <Link to="/" className="link">
+                 <span className="icon">
+                 <RiBarChartGroupedLine />
+                 </span> Metrics
+               </Link>
+             </li>
+           </>
+          )}
+           {accessLevel === 3 && (
+             <>
+             <li className="menu-item">
+               <Link to="/" className="link">
+               <span className="icon">
+                 <TbBrandBooking />  
+                 </span> Bookings
+               </Link>
+             </li>
+             <li className="menu-item">
+               <Link to="/" className="link">
+                 <span className="icon">
+                 <RiBarChartGroupedLine />
+                 </span> Metrics
+               </Link>
+             </li>
+           </>
           )}
         </ul>
       </div>
-
-      {/* SIGN-IN SECTION */}
-      <div className="sign-in-section">
-        <p className="sign-in-text">
-          Sign in to unlock features and access more tools.
-        </p>
-        <button className="sign-in-button" onClick={openLoginDialog}>
-          SIGN IN
-        </button>
-      </div>
+        {!signein && (
+          <>
+           {/* SIGN-IN SECTION */}
+             <div className="sign-in-section">
+               <p className="sign-in-text">
+                 Sign in to unlock features and access more tools.
+               </p>
+              <button className="sign-in-button" onClick={openLoginDialog}>
+                 SIGN IN
+              </button>
+            </div>
+          </>
+        )} 
+  
 
       {/* SISYPHUS VENTURES SECTION */}
       <div className="menu-section">
@@ -158,7 +235,7 @@ const SidebarMenu = ({ accessLevel = 3, onUserRole }) => {
         open={dialogState.loginOpen}
         onClose={closeDialogs}
         onOpenRegister={openRegisterDialog}
-        onUserRole={onUserRole}
+        onUserRole={setUserRole}
       />
 
       {/* ALERT COMPONENT */}
