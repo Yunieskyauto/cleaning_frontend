@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./SidebarMenu.scss";
 import { Link } from "react-router-dom";
+import { useLocation, useOutletContext, useSearchParams } from "react-router-dom";
 import { LoginDialog } from "../dialogs/LoginDialog.tsx";
 import { RegisterUserDialog } from "../dialogs/RegisterUserDialog.tsx";
 import AlertBox from "../alert/AlertBox.tsx";
@@ -11,7 +12,7 @@ import { RiBarChartGroupedLine } from "react-icons/ri";
 import { PiUsersFour } from "react-icons/pi";
 import { GoCodeReview } from "react-icons/go";
 import { TbBrandBooking } from "react-icons/tb";
-const SidebarMenu = ({ accessLevel = 0, onUserRole }) => {
+const SidebarMenu = ({ user }) => {
   const [dialogState, setDialogState] = useState({
     registerOpen: false,
     loginOpen: false,
@@ -65,6 +66,12 @@ const SidebarMenu = ({ accessLevel = 0, onUserRole }) => {
       closeDialogs();
     }
   };
+
+   // Effect to set the welcome message based on user role
+    useEffect(() => {
+     
+      console.log("OnLogged", user);
+    }, [user]);
 
   useEffect(() => {
     if (alertState.isAlertVisible) {

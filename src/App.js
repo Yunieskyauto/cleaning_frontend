@@ -21,48 +21,21 @@ import { User } from "./User/User.tsx";
 import { UserEmailVerification } from "./users/UserEmailVerification.tsx";
 
 function App() {
-  const [employee, setEmployee] = useState({ "firstName": "", "lastName": "", "accessToken": "", "accessLevel": "" })
-  const [userName, setUserName] = useState('')
-
-  const [userRole, setUserRole] = useState({ "firstName": "", "lastName": "", "accessToken": "", "accessLevel": "", id: 0})
+  const [userRole, setUserRole] = useState({ "firstName": "", "lastName": "", "accessToken": "", "accessLevel": "", "id": 0})
   
-  const [userLevel, setUserLevel] = useState(0)
-  const handleUser = (newUser) => {
-    
-    if (newUser !== undefined) {
-      setEmployee(newUser)
-      setUserLevel(newUser.accessLevel)
-    } else {
-      toast.error('Could not login', {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: true,
-        closeOnClick: false,
-        theme: "light",
-        });
-    }
+  const hadleLoggedUser = (data) => {
+     setUserRole((prevState) => ({
+      ...prevState,
+      id: data.id,
+      accessLevel: data.access_level
+     }));
   }
+
+  useEffect(() => {
+    console.log("After", userRole);
+  }, [userRole])
+
   const Layout = () => {
-    
-    useEffect(() => {
-      console.log("User Role", userRole)
-      /*
-      if (employee.accessToken !== "") {
-        toast.success('Login success!', {
-          position: "top-center",
-          autoClose: 1000,
-          hideProgressBar: true,
-          closeOnClick: false,
-          theme: "light",
-          });
-        if (employee.accessLevel === 1 ) {
-          setUserName(employee.firstName + " " + employee.lastName)
-          navigate("/")
-        }
-      }
-      console.log(userLevel)
-      */
-    }, [employee, userRole])
     const navigate = useNavigate();
     return (
       <div className="main"> 
@@ -70,6 +43,7 @@ function App() {
           <div className="menuContainer">
             <SidebarMenu 
             onUserRole={(userRole) => setUserRole(userRole)}
+            user={userRole} 
             />
           </div>
           <div className="contentContainer">
@@ -108,7 +82,7 @@ function App() {
         },
         {
           path: "/user-email-verification",
-          element: <UserEmailVerification />
+          element: <UserEmailVerification onLoggedUser={hadleLoggedUser} />
         },
         {
           path: "/user",

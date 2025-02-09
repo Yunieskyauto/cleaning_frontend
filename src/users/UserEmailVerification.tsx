@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-export const UserEmailVerification = () => {
+export const UserEmailVerification = ({onLoggedUser}) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const emailVerificationToken = searchParams.get("token");
@@ -24,8 +24,9 @@ export const UserEmailVerification = () => {
          
         const data = await res.json();  // TODO add the response message to an alert and add the user to login
         
-        console.log("UserData", data)
+       
         if (res.ok) {
+          onLoggedUser(data);
           navigate(`/?userId=${data.id}`)
         } else {
           navigate(`/?messageType=error&message=Invitation to invalid or consumed`)
