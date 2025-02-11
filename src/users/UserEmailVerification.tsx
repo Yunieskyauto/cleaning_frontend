@@ -2,6 +2,7 @@ import { useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 export const UserEmailVerification = ({ onLoggedUser, onError }) => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const emailVerificationToken = searchParams.get("token");
 
@@ -30,6 +31,7 @@ export const UserEmailVerification = ({ onLoggedUser, onError }) => {
     } catch (error) {
       onError("An error occurred during email verification.");
     }
+    navigate("/");
   }, [emailVerificationToken, onLoggedUser, onError]);
 
   /** ✅ Runs only when `emailVerificationToken` is available */
