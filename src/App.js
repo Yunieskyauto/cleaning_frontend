@@ -27,16 +27,14 @@ function App() {
      setUserRole((prevState) => ({
       ...prevState,
       id: data.id,
-      accessLevel: data.access_level
+      accessLevel: data.access_level,
+      firstName: data.first_name,
+      lastName: data.last_name,
+      accessToken: data.access_token,
      }));
   }
 
-  useEffect(() => {
-    console.log("After", userRole);
-  }, [userRole])
-
   const Layout = () => {
-    const navigate = useNavigate();
     return (
       <div className="main"> 
         <div className="container">
@@ -82,7 +80,10 @@ function App() {
         },
         {
           path: "/user-email-verification",
-          element: <UserEmailVerification onLoggedUser={hadleLoggedUser} />
+          element: <UserEmailVerification 
+          onLoggedUser={hadleLoggedUser} 
+          onError={(message) => console.log(message)}
+          />
         },
         {
           path: "/user",

@@ -45,38 +45,6 @@ export const Home = () => {
     }
   }, [message, messageType, alertType]);
 
-  // Effect to handle authentication when userId exists
-  useEffect(() => {
-    if (!userId) return;
-
-    const authenticateWithId = async () => {
-      try {
-        const res = await fetch("/id-authenticate", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id: parseInt(userId, 10) }),
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          console.log("Authenticated User:", data);
-          const successMessage = "Your email has been successfully verified. You can now access all features of your account."
-          handleToast(TOAST_TYPES.SUCCESS, successMessage);
-        } else {
-          throw new Error(data.message || "Authentication failed");
-        }
-      } catch (error) {
-        console.error("Error authenticating:", error.message);
-        alert(`Error: ${error.message}`);
-      }
-    };
-
-    authenticateWithId();
-  }, [userId]);
-
   // Effect to set the welcome message based on user role
   useEffect(() => {
     switch (userRole?.accessLevel) {

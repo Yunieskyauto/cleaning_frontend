@@ -1,47 +1,43 @@
-import { useEffect, useState } from "react";
+import { useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-export const UserEmailVerification = ({onLoggedUser}) => {
-  const navigate = useNavigate();
+export const UserEmailVerification = ({ onLoggedUser, onError }) => {
   const [searchParams] = useSearchParams();
   const emailVerificationToken = searchParams.get("token");
 
+  /** ✅ Memoized function to handle email verification */
+  const handleEmailVerification = useCallback(async () => {
+    if (!emailVerificationToken) {
+      onError("We couldn't locate the invitation token");
+      return;
+    }
+
+    try {
+      const res = await fetch("/user-email-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: emailVerificationToken }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        onLoggedUser(data);
+      } else {
+        console.log("Verification Failed:", data);
+        onError("Invitation is invalid or has been consumed.");
+      }
+    } catch (error) {
+      onError("An error occurred during email verification.");
+    }
+  }, [emailVerificationToken, onLoggedUser, onError]);
+
+  /** ✅ Runs only when `emailVerificationToken` is available */
   useEffect(() => {
-    const handleEmailVerification = async () => {
-      if (!emailVerificationToken) {
-        navigate(`/?messageType=error&message=We couldn't locate the invitation token`); // Redirect to a safe page if no token is found
-        return;
-      }
-
-      try {
-        const res = await fetch("/user-email-verification", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ token: emailVerificationToken }),
-        });
-         
-        const data = await res.json();  // TODO add the response message to an alert and add the user to login
-        
-       
-        if (res.ok) {
-          onLoggedUser(data);
-          navigate(`/?userId=${data.id}`)
-        } else {
-          navigate(`/?messageType=error&message=Invitation to invalid or consumed`)
-          console.log("Dataaaa", data)
-        }
-        
-      } catch (error) {
-        console.error("Error during email verification:", error.message);
-        // Navigate to home and optionally trigger a failed alert
-        navigate("/", { state: { alert: "Email verification failed. Please try again." } });
-      }
-    };
-
-    handleEmailVerification();
-  }, [emailVerificationToken, navigate]);
+    if (emailVerificationToken) {
+      handleEmailVerification();
+    }
+  }, [emailVerificationToken, handleEmailVerification]);
 
   return null;
 };
